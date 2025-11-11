@@ -416,8 +416,7 @@
                 <!-- 1. Pembangkit Kunci -->
                 <div class="space-y-4">
                     <h3 class="text-2xl font-semibold border-b border-gray-600 pb-2">1. Pembangkit Kunci (Key Setup)</h3>
-                    <p class="text-sm text-gray-400">Masukkan dua bilangan prima (`p` dan `q`) dan satu nilai `e`. (Gunakan angka kecil untuk demo).</p>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="space-y-2">
                             <label for="rsa-p" class="block font-medium text-gray-300">Prima `p`:</label>
                             <input type="number" id="rsa-p" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white" value="5">
@@ -426,15 +425,22 @@
                             <label for="rsa-q" class="block font-medium text-gray-300">Prima `q`:</label>
                             <input type="number" id="rsa-q" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white" value="11">
                         </div>
-                        <div class="space-y-2">
-                            <label for="rsa-e" class="block font-medium text-gray-300">Publik `e`:</label>
-                            <input type="number" id="rsa-e" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white" value="3">
-                        </div>
                     </div>
-                    <button onclick="generateRSAKeys()" class="w-full py-3 px-6 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 shadow-md">
-                        Hasilkan Kunci
+                    <button onclick="findEChoices()" class="w-full py-3 px-6 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 shadow-md">
+                        1. Hitung φ(n) dan Cari Pilihan e
                     </button>
-                    <pre id="rsa-keys-result" class="w-full p-4 bg-gray-900 rounded-lg border border-gray-700 text-sm text-green-400 font-mono break-words overflow-auto">...</pre>
+                    
+                    <div id="rsa-e-selection-container" class="hidden space-y-4 mt-4">
+                        <div class="space-y-2">
+                            <label for="rsa-e-select" class="block font-medium text-gray-300">Pilih nilai `e` (yang relatif prima dengan φ(n)):</label>
+                            <select id="rsa-e-select" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white"></select>
+                        </div>
+                        <button onclick="generateRSAKeys()" class="w-full py-3 px-6 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 shadow-md">
+                            2. Hasilkan Kunci dengan `e` yang Dipilih
+                        </button>
+                    </div>
+
+                    <pre id="rsa-keys-result" class="w-full p-4 bg-gray-900 rounded-lg border border-gray-700 text-sm text-green-400 font-mono break-words overflow-auto mt-4">...</pre>
                     <span id="rsa-keys-error" class="text-red-400 text-sm hidden"></span>
                     <div id="rsa-keys-table-container" class="mt-2"></div>
                 </div>
@@ -649,10 +655,8 @@
             const tableContainer = document.getElementById('caesar-table-container');
             let result = "";
             
-            // Kosongkan tabel sebelumnya
             tableContainer.innerHTML = '';
 
-            // Buat tabel
             const table = document.createElement('table');
             table.className = 'w-full text-sm text-left text-gray-300 mt-2';
             const thead = document.createElement('thead');
@@ -674,16 +678,15 @@
                 const row = document.createElement('tr');
                 row.className = 'border-b border-gray-700';
 
-                if (char.match(/[a-z]/i)) { // Cek apakah huruf
+                if (char.match(/[a-z]/i)) {
                     let code = text.charCodeAt(i);
-                    let base = (code >= 65 && code <= 90) ? 65 : 97; // 65=A, 97=a
+                    let base = (code >= 65 && code <= 90) ? 65 : 97;
                     let p_val = code - base;
                     let effectiveShift = mode === 'encrypt' ? shift : -shift;
                     let op = mode === 'encrypt' ? '+' : '-';
                     
-                    // Rumus C = (P + k) mod 26
                     let newCode = (p_val + effectiveShift) % 26;
-                    if (newCode < 0) newCode += 26; // Tangani modulus negatif
+                    if (newCode < 0) newCode += 26;
                     
                     let finalChar = String.fromCharCode(newCode + base);
                     result += finalChar;
@@ -697,7 +700,7 @@
                     `;
 
                 } else {
-                    result += char; // Biarkan karakter non-huruf
+                    result += char;
                     row.innerHTML = `
                         <td class="px-4 py-2 font-mono">${char}</td>
                         <td colspan="4" class="px-4 py-2 text-gray-500">Karakter bukan huruf, dilewati.</td>
@@ -780,9 +783,9 @@
                         <td class="px-4 py-2 font-mono">${finalChar}</td>
                     `;
 
-                    keyIndex++; // Hanya increment keyIndex jika karakternya huruf
+                    keyIndex++;
                 } else {
-                    result += char; // Biarkan karakter non-huruf
+                    result += char;
                     row.innerHTML = `
                         <td class="px-4 py-2 font-mono">${char}</td>
                         <td colspan="6" class="px-4 py-2 text-gray-500">Karakter bukan huruf, dilewati.</td>
@@ -804,7 +807,7 @@
             const tableContainer = document.getElementById('transposisi-table-container');
 
             errorEl.classList.add('hidden');
-            tableContainer.innerHTML = ''; // Kosongkan detail sebelumnya
+            tableContainer.innerHTML = '';
 
             if (!key) {
                 errorEl.textContent = "Kata kunci tidak boleh kosong.";
@@ -838,14 +841,13 @@
             const numRows = Math.ceil(text.length / numCols);
             const paddedText = text.padEnd(numRows * numCols, 'X');
             const grid = [];
-            const order = getNumericOrder(key); // "UAD" -> [2, 0, 1]
+            const order = getNumericOrder(key);
 
             let html = `<h4 class="font-semibold text-gray-400">1. Membuat Grid:</h4>`;
             html += `<p class="text-sm text-gray-500 mb-2">Plaintext ditulis baris per baris. Karakter 'X' ditambahkan jika perlu.</p>`;
             const table = document.createElement('table');
             table.className = 'w-full text-sm text-left text-gray-300';
             
-            // Header dengan kunci dan urutan
             let thead = `<thead><tr class="bg-gray-700 text-gray-100">`;
             for(let i=0; i<key.length; i++) {
                 thead += `<th class="px-4 py-2 text-center">${key[i]} (${order[i]})</th>`;
@@ -853,7 +855,6 @@
             thead += `</tr></thead>`;
             table.innerHTML += thead;
 
-            // Body dengan plaintext
             let tbody = `<tbody>`;
             for(let i=0; i < numRows; i++) {
                 const rowText = paddedText.substring(i * numCols, (i + 1) * numCols);
@@ -869,7 +870,6 @@
             container.innerHTML = html;
             container.appendChild(table);
 
-            // Proses membaca kolom
             let result = "";
             let readHtml = `<h4 class="font-semibold text-gray-400 mt-4">2. Membaca Grid Sesuai Urutan Kunci:</h4>`;
             readHtml += `<p class="text-sm text-gray-500 mb-2">Ciphertext dibentuk dengan membaca kolom dari urutan 0, 1, 2, dst.</p>`;
@@ -900,7 +900,7 @@
             }
 
             const grid = Array.from({ length: numRows }, () => Array(numCols).fill(''));
-            const order = getNumericOrder(key); // "UAD" -> [2, 0, 1]
+            const order = getNumericOrder(key);
             
             let html = `<h4 class="font-semibold text-gray-400">1. Menyiapkan Grid Kosong:</h4>`;
             html += `<p class="text-sm text-gray-500 mb-2">Grid (${numRows}x${numCols}) disiapkan sesuai panjang kunci dan ciphertext.</p>`;
@@ -925,7 +925,6 @@
             container.innerHTML = html;
             container.appendChild(table);
 
-            // Proses mengisi grid
             let textIndex = 0;
             let writeHtml = `<h4 class="font-semibold text-gray-400 mt-4">2. Mengisi Grid dengan Ciphertext:</h4>`;
             writeHtml += `<p class="text-sm text-gray-500 mb-2">Ciphertext ditulis secara vertikal sesuai urutan kunci (kolom 0, 1, 2, ...).</p>`;
@@ -934,14 +933,12 @@
                 const colIndex = order.indexOf(i);
                 for (let r = 0; r < numRows; r++) {
                     grid[r][colIndex] = text[textIndex];
-                    // Update table cell visually
                     table.rows[r+1].cells[colIndex].innerText = text[textIndex];
                     textIndex++;
                 }
             }
             container.innerHTML += writeHtml;
             
-            // Proses membaca baris
             const result = grid.map(row => row.join('')).join('');
             let readHtml = `<h4 class="font-semibold text-gray-400 mt-4">3. Membaca Grid Secara Horizontal:</h4>`;
             readHtml += `<p class="text-sm text-gray-500 mb-2">Plaintext didapatkan dengan membaca grid baris per baris.</p>`;
@@ -1006,166 +1003,85 @@
             resultEl.textContent = result;
         }
 
-        // --- Logika RSA ---
-        // Diperlukan BigInt untuk perhitungan RSA
-        
-        // Cek GCD
-        function gcd(a, b) {
-            while (b) {
-                [a, b] = [b, a % b];
-            }
-            return a;
-        }
-        
-        // Cari Modulo Inverse (d)
-        function modInverse(e, phi) {
-            let m0 = phi, t, q;
-            let x0 = 0n, x1 = 1n;
-            let steps = `Mencari d dimana (d * ${e}) mod ${phi} = 1:<br>`;
-            steps += `Menggunakan Extended Euclidean Algorithm:<br>`;
-            steps += `<table class="w-full text-sm text-left text-gray-300 mt-2 font-mono">
-                        <thead class="bg-gray-700 text-gray-100"><tr><th>q</th><th>e</th><th>phi</th><th>t</th><th>x0</th><th>x1</th></tr></thead><tbody>`;
-            
-            if (phi === 1n) return { result: 0n, steps: "phi tidak valid." };
+        // --- Logika Mode Operasi ECB ---
+        function ecbEncrypt() {
+            const plaintext = document.getElementById('ecb-input').value.toUpperCase();
+            const key = document.getElementById('ecb-key').value.toUpperCase();
+            const blockSize = parseInt(document.getElementById('ecb-blocksize').value);
+            const resultEl = document.getElementById('ecb-result');
+            const errorEl = document.getElementById('ecb-error');
+            const tableContainer = document.getElementById('ecb-table-container');
 
-            let temp_e = e, temp_phi = phi;
-
-            while (temp_e > 1n) {
-                q = temp_e / temp_phi;
-                steps += `<tr><td>${q}</td><td>${temp_e}</td><td>${temp_phi}</td>`;
-                [temp_e, temp_phi] = [temp_phi, temp_e % temp_phi];
-                t = x0;
-                x0 = x1 - q * x0;
-                x1 = t;
-                steps += `<td>${t}</td><td>${x0}</td><td>${x1}</td></tr>`;
-            }
-            steps += `</tbody></table>`;
-
-            if (x1 < 0n) {
-                steps += `Hasil x1 (${x1}) negatif, jadi tambahkan dengan phi: ${x1} + ${m0} = ${x1 + m0}<br>`;
-                x1 += m0;
-            }
-            steps += `Nilai invers modular (d) adalah: <b>${x1}</b>`;
-            return { result: x1, steps: steps };
-        }
-
-        // Modular Exponentiation (Penting!)
-        function modPow(base, exp, mod) {
-            if (mod === 0n) throw new Error('Cannot perform modPow with modulus 0');
-            let steps = `Menghitung (${base}^${exp}) mod ${mod} menggunakan Exponentiation by Squaring:<br>`;
-            steps += `<table class="w-full text-sm text-left text-gray-300 mt-2 font-mono">
-                        <thead class="bg-gray-700 text-gray-100"><tr><th>exp</th><th>base</th><th>result</th><th>Keterangan</th></tr></thead><tbody>`;
-            
-            let result = 1n;
-            let current_base = base % mod;
-            let current_exp = exp;
-
-            while (current_exp > 0n) {
-                let step_desc = '';
-                if (current_exp % 2n === 1n) {
-                    step_desc = `exp ganjil, result = (result * base) mod ${mod} = (${result} * ${current_base}) mod ${mod}`;
-                    result = (result * current_base) % mod;
-                    step_desc += ` = ${result}`;
-                } else {
-                    step_desc = `exp genap, lewati perkalian result.`;
-                }
-                steps += `<tr><td>${current_exp}</td><td>${current_base}</td><td>${result}</td><td>${step_desc}</td></tr>`;
-                
-                current_exp = current_exp / 2n;
-                if (current_exp > 0n) {
-                    step_desc = `base = (base * base) mod ${mod} = (${current_base} * ${current_base}) mod ${mod}`;
-                    current_base = (current_base * current_base) % mod;
-                    step_desc += ` = ${current_base}`;
-                    steps += `<tr><td>${current_exp} (setelah /2)</td><td>${current_base}</td><td>${result}</td><td>${step_desc}</td></tr>`;
-                }
-            }
-            steps += `</tbody></table>`;
-            steps += `Hasil akhir: <b>${result}</b>`;
-            return { result: result, steps: steps };
-        }
-
-        function generateRSAKeys() {
-            const p = BigInt(document.getElementById('rsa-p').value);
-            const q = BigInt(document.getElementById('rsa-q').value);
-            const e = BigInt(document.getElementById('rsa-e').value);
-            const resultEl = document.getElementById('rsa-keys-result');
-            const errorEl = document.getElementById('rsa-keys-error');
-            const tableContainer = document.getElementById('rsa-keys-table-container');
-            
             errorEl.classList.add('hidden');
+            resultEl.innerHTML = '...';
             tableContainer.innerHTML = '';
 
-            try {
-                // 1. Hitung n
-                const n = p * q;
-                let stepsHtml = `<h4 class="font-semibold text-gray-400">1. Hitung n:</h4>`;
-                stepsHtml += `<p class="font-mono text-sm">n = p * q = ${p} * ${q} = <b>${n}</b></p>`;
-
-                // 2. Hitung phi
-                const phi = (p - 1n) * (q - 1n);
-                stepsHtml += `<h4 class="font-semibold text-gray-400 mt-2">2. Hitung φ(n) (Totient):</h4>`;
-                stepsHtml += `<p class="font-mono text-sm">φ(n) = (p-1) * (q-1) = ${p-1n} * ${q-1n} = <b>${phi}</b></p>`;
-
-                // 3. Cek e
-                stepsHtml += `<h4 class="font-semibold text-gray-400 mt-2">3. Validasi Kunci Publik (e):</h4>`;
-                if (gcd(e, phi) !== 1n) {
-                    stepsHtml += `<p class="font-mono text-sm text-red-400">GCD(e, φ(n)) = GCD(${e}, ${phi}) harus 1. Kondisi tidak terpenuhi.</p>`;
-                    throw new Error(`e (${e}) tidak relatif prima dengan φ(n) (${phi}). Coba 'e' lain.`);
-                }
-                stepsHtml += `<p class="font-mono text-sm">GCD(e, φ(n)) = GCD(${e}, ${phi}) = 1. (Syarat terpenuhi)</p>`;
-                
-                // 4. Cari d
-                stepsHtml += `<h4 class="font-semibold text-gray-400 mt-2">4. Hitung Kunci Privat (d):</h4>`;
-                const d_calc = modInverse(e, phi);
-                const d = d_calc.result;
-                stepsHtml += d_calc.steps;
-                
-                tableContainer.innerHTML = stepsHtml;
-
-                resultEl.textContent = `
-n (Modulus Publik): ${n}
-φ(n) (Phi):           ${phi}
-e (Kunci Publik):     ${e}
-d (Kunci Privat):     ${d}
----------------------------------
-Kunci Publik (e, n): (${e}, ${n})
-Kunci Privat (d, n): (${d}, ${n})
-                `;
-            } catch (err) {
-                resultEl.textContent = "...";
-                errorEl.textContent = err.message;
+            if (!plaintext || !key || !blockSize) {
+                errorEl.textContent = "Plaintext, Kunci, dan Ukuran Blok tidak boleh kosong.";
                 errorEl.classList.remove('hidden');
+                return;
             }
-        }
+            if (blockSize <= 0) {
+                errorEl.textContent = "Ukuran Blok harus lebih besar dari 0.";
+                errorEl.classList.remove('hidden');
+                return;
+            }
 
-        function encryptRSA() {
-            const p = BigInt(document.getElementById('rsa-encrypt-p').value);
-            const e = BigInt(document.getElementById('rsa-encrypt-e').value);
-            const n = BigInt(document.getElementById('rsa-encrypt-n').value);
-            const resultEl = document.getElementById('rsa-encrypt-result');
-            const tableContainer = document.getElementById('rsa-encrypt-table-container');
+            let paddedText = plaintext;
+            const paddingNeeded = blockSize - (plaintext.length % blockSize);
+            if (paddingNeeded !== blockSize) {
+                paddedText += "X".repeat(paddingNeeded);
+            }
 
-            tableContainer.innerHTML = '';
+            const blocks = [];
+            for (let i = 0; i < paddedText.length; i += blockSize) {
+                blocks.push(paddedText.substring(i, i + blockSize));
+            }
+
+            const ciphertextBlocks = [];
+            const blockColors = {};
+            const colors = ['bg-sky-700', 'bg-amber-700', 'bg-rose-700', 'bg-teal-700', 'bg-indigo-700', 'bg-pink-700'];
+            let colorIndex = 0;
             
-            const calculation = modPow(p, e, n);
-            resultEl.textContent = calculation.result.toString();
-            tableContainer.innerHTML = calculation.steps;
+            let tableHtml = `<table class="w-full text-sm text-left text-gray-300 font-mono">
+                                <thead class="bg-gray-700 text-gray-100"><tr>
+                                    <th class="px-4 py-2">Plaintext Block</th>
+                                    <th class="px-4 py-2">Ciphertext Block</th>
+                                </tr></thead><tbody>`;
+
+            resultEl.innerHTML = '';
+
+            blocks.forEach(block => {
+                let ciphertextBlock = '';
+                for (let i = 0; i < block.length; i++) {
+                    const p_char = block.charCodeAt(i) - 65;
+                    const k_char = key.charCodeAt(i % key.length) - 65;
+                    const c_char = String.fromCharCode(((p_char + k_char) % 26) + 65);
+                    ciphertextBlock += c_char;
+                }
+                ciphertextBlocks.push(ciphertextBlock);
+
+                if (blockColors[ciphertextBlock] === undefined) {
+                    blockColors[ciphertextBlock] = colors[colorIndex % colors.length];
+                    colorIndex++;
+                }
+                const color = blockColors[ciphertextBlock];
+
+                const blockSpan = document.createElement('span');
+                blockSpan.className = `p-2 rounded-md text-white ${color}`;
+                blockSpan.textContent = ciphertextBlock;
+                resultEl.appendChild(blockSpan);
+
+                tableHtml += `<tr class="border-b border-gray-700">
+                                <td class="px-4 py-2">${block}</td>
+                                <td class="px-4 py-2 ${color.replace('bg', 'text')} font-semibold">${ciphertextBlock}</td>
+                              </tr>`;
+            });
+            
+            tableHtml += `</tbody></table>`;
+            tableContainer.innerHTML = tableHtml;
         }
 
-        function decryptRSA() {
-            const c = BigInt(document.getElementById('rsa-decrypt-c').value);
-            const d = BigInt(document.getElementById('rsa-decrypt-d').value);
-            const n = BigInt(document.getElementById('rsa-decrypt-n').value);
-            const resultEl = document.getElementById('rsa-decrypt-result');
-            const tableContainer = document.getElementById('rsa-decrypt-table-container');
-
-            tableContainer.innerHTML = '';
-
-            const calculation = modPow(c, d, n);
-            resultEl.textContent = calculation.result.toString();
-            tableContainer.innerHTML = calculation.steps;
-        }
-        
         // --- Logika LSB ---
         function lsbEmbed() {
             const bytesStr = document.getElementById('lsb-bytes').value;
@@ -1229,8 +1145,8 @@ Kunci Privat (d, n): (${d}, ${n})
         }
 
         function lsbExtract() {
-            const bytesStr = document.getElementById('lsb-bytes').value; // Ambil dari input
-            const messageLength = document.getElementById('lsb-message').value.trim().length; // Asumsi panjang pesan diketahui
+            const bytesStr = document.getElementById('lsb-bytes').value;
+            const messageLength = document.getElementById('lsb-message').value.trim().length;
             const resultEl = document.getElementById('lsb-extract-result');
             const errorEl = document.getElementById('lsb-error');
             const tableContainer = document.getElementById('lsb-table-container');
@@ -1274,93 +1190,269 @@ Kunci Privat (d, n): (${d}, ${n})
             resultEl.textContent = extractedMessage;
         }
 
-        // --- Logika Mode Operasi ECB ---
-        function ecbEncrypt() {
-            const plaintext = document.getElementById('ecb-input').value.toUpperCase();
-            const key = document.getElementById('ecb-key').value.toUpperCase();
-            const blockSize = parseInt(document.getElementById('ecb-blocksize').value);
-            const resultEl = document.getElementById('ecb-result');
-            const errorEl = document.getElementById('ecb-error');
-            const tableContainer = document.getElementById('ecb-table-container');
+        // --- Logika RSA ---
+        const RSAStyles = {
+            h1: 'text-2xl font-bold text-white mb-3',
+            h2: 'text-xl font-semibold text-blue-300 mt-4 mb-2',
+            h3: 'text-lg font-medium text-gray-300 mt-3 mb-1',
+            p: 'text-gray-300 font-mono text-sm',
+            code: 'text-green-400',
+            formula: 'text-yellow-400 font-mono text-base my-2 p-2 bg-gray-700/50 rounded-md block',
+            result: 'text-xl font-bold text-green-300',
+            error: 'text-red-400',
+            table: 'w-full text-sm text-left text-gray-300 mt-2 font-mono border-collapse',
+            th: 'px-4 py-2 bg-gray-700 text-gray-100 border border-gray-600',
+            td: 'px-4 py-2 border border-gray-600',
+        };
 
-            errorEl.classList.add('hidden');
-            resultEl.innerHTML = '...';
-            tableContainer.innerHTML = '';
-
-            if (!plaintext || !key || !blockSize) {
-                errorEl.textContent = "Plaintext, Kunci, dan Ukuran Blok tidak boleh kosong.";
-                errorEl.classList.remove('hidden');
-                return;
-            }
-            if (blockSize <= 0) {
-                errorEl.textContent = "Ukuran Blok harus lebih besar dari 0.";
-                errorEl.classList.remove('hidden');
-                return;
-            }
-
-            // 1. Padding
-            let paddedText = plaintext;
-            const paddingNeeded = blockSize - (plaintext.length % blockSize);
-            if (paddingNeeded !== blockSize) {
-                paddedText += "X".repeat(paddingNeeded);
-            }
-
-            // 2. Blocking
-            const blocks = [];
-            for (let i = 0; i < paddedText.length; i += blockSize) {
-                blocks.push(paddedText.substring(i, i + blockSize));
-            }
-
-            // 3. Encryption & Analysis
-            const ciphertextBlocks = [];
-            const blockColors = {};
-            const colors = ['bg-sky-700', 'bg-amber-700', 'bg-rose-700', 'bg-teal-700', 'bg-indigo-700', 'bg-pink-700'];
-            let colorIndex = 0;
-            
-            let tableHtml = `<table class="w-full text-sm text-left text-gray-300 font-mono">
-                                <thead class="bg-gray-700 text-gray-100"><tr>
-                                    <th class="px-4 py-2">Plaintext Block</th>
-                                    <th class="px-4 py-2">Ciphertext Block</th>
-                                </tr></thead><tbody>`;
-
-            resultEl.innerHTML = ''; // Clear previous results
-
-            blocks.forEach(block => {
-                // Simple Vigenere-like XOR encryption for demonstration
-                let ciphertextBlock = '';
-                for (let i = 0; i < block.length; i++) {
-                    const p_char = block.charCodeAt(i) - 65;
-                    const k_char = key.charCodeAt(i % key.length) - 65;
-                    const c_char = String.fromCharCode(((p_char + k_char) % 26) + 65);
-                    ciphertextBlock += c_char;
+        function getFactors(num) {
+            const factors = new Set();
+            for (let i = 1; i <= Math.sqrt(Number(num)); i++) {
+                if (num % BigInt(i) === 0n) {
+                    factors.add(BigInt(i));
+                    factors.add(num / BigInt(i));
                 }
-                ciphertextBlocks.push(ciphertextBlock);
+            }
+            return Array.from(factors).sort((a, b) => a > b ? 1 : -1);
+        }
 
-                // Assign color for visualization
-                if (blockColors[ciphertextBlock] === undefined) {
-                    blockColors[ciphertextBlock] = colors[colorIndex % colors.length];
-                    colorIndex++;
-                }
-                const color = blockColors[ciphertextBlock];
+        function gcd(a, b) {
+            while (b) {
+                [a, b] = [b, a % b];
+            }
+            return a;
+        }
 
-                // Append to result view
-                const blockSpan = document.createElement('span');
-                blockSpan.className = `p-2 rounded-md text-white ${color}`;
-                blockSpan.textContent = ciphertextBlock;
-                resultEl.appendChild(blockSpan);
+        function modInverse(e, phi) {
+            let m0 = phi, t, q;
+            let x0 = 0n, x1 = 1n;
+            if (phi === 1n) return 0n;
+            while (e > 1n) {
+                q = e / phi;
+                [e, phi] = [phi, e % phi];
+                t = x0;
+                x0 = x1 - q * x0;
+                x1 = t;
+            }
+            if (x1 < 0n) x1 += m0;
+            return x1;
+        }
 
-                // Append to table view
-                tableHtml += `<tr class="border-b border-gray-700">
-                                <td class="px-4 py-2">${block}</td>
-                                <td class="px-4 py-2 ${color.replace('bg', 'text')} font-semibold">${ciphertextBlock}</td>
-                              </tr>`;
-            });
+        function modPow(base, exp, mod) {
+            let res = 1n;
+            base %= mod;
+            while (exp > 0n) {
+                if (exp % 2n === 1n) res = (res * base) % mod;
+                exp >>= 1n;
+                base = (base * base) % mod;
+            }
+            return res;
+        }
+        
+        function modPowWithSteps(base, exp, mod) {
+            let report = `<h3 class="${RSAStyles.h3}">Metode Square and Multiply:</h3>`;
             
-            tableHtml += `</tbody></table>`;
-            tableContainer.innerHTML = tableHtml;
+            const powers = [];
+            let current_power = 1n;
+            
+            report += `<div class="${RSAStyles.p}">`;
+            while(current_power <= exp) {
+                const val_mod = modPow(base, current_power, mod);
+                powers.push({power: current_power, val: val_mod});
+                report += `  ${base}<sup>${current_power}</sup> mod ${mod} = ${val_mod}<br>`;
+                current_power *= 2n;
+            }
+            report += `</div>`;
+
+            report += `<h3 class="${RSAStyles.h3}">Kombinasi Pangkat:</h3>`;
+            let temp_exp = exp;
+            const exp_parts = [];
+            for(let i = powers.length - 1; i >= 0; i--) {
+                if (temp_exp >= powers[i].power) {
+                    temp_exp -= powers[i].power;
+                    exp_parts.push(powers[i]);
+                }
+            }
+            exp_parts.reverse(); // Reverse to multiply from smallest to largest
+            
+            const exp_sum_str = exp_parts.map(p => p.power).join(' + ');
+            report += `<p class="${RSAStyles.p}">${base}<sup>${exp}</sup> = ${base}<sup>${exp_sum_str}</sup></p>`;
+            
+            const val_mult_str = exp_parts.map(p => p.val).join(' × ');
+            report += `<p class="${RSAStyles.p}">= ${val_mult_str} mod ${mod}</p>`;
+            
+            report += `<h3 class="${RSAStyles.h3}">Perhitungan Bertahap:</h3>`;
+            report += `<div class="${RSAStyles.p}">`;
+            
+            let result = 1n;
+            if (exp_parts.length > 1) {
+                 result = exp_parts[0].val;
+                 for(let i=1; i<exp_parts.length; i++) {
+                     let next_val = exp_parts[i].val;
+                     let old_res = result;
+                     result = (result * next_val) % mod;
+                     report += `  ${old_res} × ${next_val} = ${old_res * next_val} ≡ <b>${result}</b> mod ${mod}<br>`;
+                 }
+            } else {
+                result = exp_parts[0].val;
+                report += `  Hasil: <b>${result}</b><br>`;
+            }
+            report += `</div>`;
+
+            const final_result = modPow(base, exp, mod);
+            return { report, result: final_result };
         }
 
 
+        let rsa_p, rsa_q, rsa_n, rsa_phi, rsa_e, rsa_d;
+
+        function findEChoices() {
+            rsa_p = BigInt(document.getElementById('rsa-p').value);
+            rsa_q = BigInt(document.getElementById('rsa-q').value);
+            const resultEl = document.getElementById('rsa-keys-result');
+            const tableContainer = document.getElementById('rsa-keys-table-container');
+            const eSelectionContainer = document.getElementById('rsa-e-selection-container');
+            const eSelect = document.getElementById('rsa-e-select');
+
+            resultEl.textContent = '...';
+            tableContainer.innerHTML = '';
+            eSelect.innerHTML = '';
+            eSelectionContainer.classList.add('hidden');
+
+            let report = `<h2 class="${RSAStyles.h2}">Langkah 1: Setup Kunci RSA</h2>`;
+            
+            report += `<h3 class="${RSAStyles.h3}">1.1 Menghitung Parameter Dasar</h3>`;
+            rsa_n = rsa_p * rsa_q;
+            rsa_phi = (rsa_p - 1n) * (rsa_q - 1n);
+            report += `<div class="${RSAStyles.p}">`;
+            report += `p = <code class="${RSAStyles.code}">${rsa_p}</code> (bilangan prima)<br>`;
+            report += `q = <code class="${RSAStyles.code}">${rsa_q}</code> (bilangan prima)<br>`;
+            report += `n = p × q = ${rsa_p} × ${rsa_q} = <code class="${RSAStyles.code}">${rsa_n}</code><br>`;
+            report += `φ(n) = (p-1) × (q-1) = ${rsa_p-1n} × ${rsa_q-1n} = <code class="${RSAStyles.code}">${rsa_phi}</code><br>`;
+            report += `</div>`;
+
+            report += `<h3 class="${RSAStyles.h3}">1.2 Memilih Kunci Publik (e)</h3>`;
+            report += `<p class="${RSAStyles.p}">Harus relatif prima dengan φ(n) = ${rsa_phi}</p>`;
+            const factorsOfPhi = getFactors(rsa_phi);
+            report += `<p class="${RSAStyles.p}">Faktor dari ${rsa_phi}: ${factorsOfPhi.join(', ')}</p>`;
+            
+            const e_choices = [];
+            for (let i = 2n; i < rsa_phi; i++) {
+                if (gcd(i, rsa_phi) === 1n) {
+                    e_choices.push(i);
+                }
+            }
+            report += `<p class="${RSAStyles.p}">Pilihan e yang mungkin: <code class="${RSAStyles.code}">${e_choices.join(', ')}</code></p>`;
+            
+            tableContainer.innerHTML = report;
+            
+            e_choices.forEach(e_val => {
+                const option = document.createElement('option');
+                option.value = e_val;
+                option.textContent = e_val;
+                if ([3n, 7n, 17n, 65537n].includes(e_val)) {
+                    option.textContent += ' (rekomendasi)';
+                }
+                eSelect.appendChild(option);
+            });
+            eSelectionContainer.classList.remove('hidden');
+        }
+
+        function generateRSAKeys() {
+            rsa_e = BigInt(document.getElementById('rsa-e-select').value);
+            const tableContainer = document.getElementById('rsa-keys-table-container');
+            const resultEl = document.getElementById('rsa-keys-result');
+            
+            let report = tableContainer.innerHTML;
+            report += `<p class="${RSAStyles.p} mt-2">Pilih e = <code class="${RSAStyles.code}">${rsa_e}</code></p>`;
+
+            report += `<h3 class="${RSAStyles.h3}">1.3 Menghitung Kunci Privat (d)</h3>`;
+            report += `<p class="${RSAStyles.p}">Harus memenuhi: d × e ≡ 1 mod φ(n)</p>`;
+            report += `<p class="${RSAStyles.p}">d × ${rsa_e} ≡ 1 mod ${rsa_phi}</p>`;
+            
+            rsa_d = modInverse(rsa_e, rsa_phi);
+            report += `<p class="${RSAStyles.p}">Dengan menggunakan Algoritma Euclidean Diperluas, ditemukan d = <code class="${RSAStyles.code}">${rsa_d}</code></p>`;
+            report += `<p class="${RSAStyles.p}">Verifikasi: (${rsa_d} × ${rsa_e}) mod ${rsa_phi} = ${rsa_d * rsa_e} mod ${rsa_phi} = <code class="${RSAStyles.code}">${(rsa_d * rsa_e) % rsa_phi}</code></p>`;
+
+            report += `<h3 class="${RSAStyles.h3}">1.4 Kunci yang Dihasilkan</h3>`;
+            report += `<p class="${RSAStyles.p}">Kunci Publik: (e, n) = <code class="${RSAStyles.code}">(${rsa_e}, ${rsa_n})</code></p>`;
+            report += `<p class="${RSAStyles.p}">Kunci Privat: (d, n) = <code class="${RSAStyles.code}">(${rsa_d}, ${rsa_n})</code></p>`;
+
+            tableContainer.innerHTML = report;
+            resultEl.textContent = `Kunci Publik: (${rsa_e}, ${rsa_n}) | Kunci Privat: (${rsa_d}, ${rsa_n})`;
+        }
+
+        function encryptRSA() {
+            const P = BigInt(document.getElementById('rsa-encrypt-p').value);
+            const e = BigInt(document.getElementById('rsa-encrypt-e').value);
+            const n = BigInt(document.getElementById('rsa-encrypt-n').value);
+            const resultEl = document.getElementById('rsa-encrypt-result');
+            const tableContainer = document.getElementById('rsa-encrypt-table-container');
+
+            let report = `<h2 class="${RSAStyles.h2}">Langkah 2: Enkripsi Pesan P = ${P}</h2>`;
+            report += `<h3 class="${RSAStyles.h3}">2.1 Rumus Enkripsi</h3>`;
+            report += `<code class="${RSAStyles.formula}">C = P<sup>e</sup> mod n</code>`;
+            
+            report += `<h3 class="${RSAStyles.h3}">2.2 Perhitungan</h3>`;
+            report += `<p class="${RSAStyles.p}">C = ${P}<sup>${e}</sup> mod ${n}</p>`;
+            const p_pow_e = P ** e;
+            report += `<p class="${RSAStyles.p}">${P}<sup>${e}</sup> = ${p_pow_e}</p>`;
+            const C = p_pow_e % n;
+            report += `<p class="${RSAStyles.p}">${p_pow_e} ÷ ${n} = ${p_pow_e / n} sisa <code class="${RSAStyles.code}">${C}</code></p>`;
+            report += `<p class="text-xs text-gray-400 font-mono">(${n} × ${p_pow_e / n} = ${n * (p_pow_e/n)}, ${p_pow_e} - ${n * (p_pow_e/n)} = ${C})</p>`;
+
+            report += `<h3 class="${RSAStyles.h3}">2.3 Hasil Enkripsi</h3>`;
+            report += `<p class="${RSAStyles.p}">Ciphertext C = <code class="${RSAStyles.result}">${C}</code></p>`;
+
+            tableContainer.innerHTML = report;
+            resultEl.textContent = C.toString();
+        }
+
+        function decryptRSA() {
+            const C = BigInt(document.getElementById('rsa-decrypt-c').value);
+            const d = BigInt(document.getElementById('rsa-decrypt-d').value);
+            const n = BigInt(document.getElementById('rsa-decrypt-n').value);
+            const resultEl = document.getElementById('rsa-decrypt-result');
+            const tableContainer = document.getElementById('rsa-decrypt-table-container');
+
+            let report = `<h2 class="${RSAStyles.h2}">Langkah 3: Dekripsi Ciphertext C = ${C}</h2>`;
+            report += `<h3 class="${RSAStyles.h3}">3.1 Rumus Dekripsi</h3>`;
+            report += `<code class="${RSAStyles.formula}">P = C<sup>d</sup> mod n</code>`;
+
+            report += `<h3 class="${RSAStyles.h3}">3.2 Perhitungan</h3>`;
+            report += `<p class="${RSAStyles.p}">P = ${C}<sup>${d}</sup> mod ${n}</p>`;
+            
+            const modPowResult = modPowWithSteps(C, d, n);
+            report += modPowResult.report;
+            const P = modPowResult.result;
+
+            report += `<h3 class="${RSAStyles.h3}">3.3 Hasil Dekripsi</h3>`;
+            report += `<p class="${RSAStyles.p}">Plaintext P = <code class="${RSAStyles.result}">${P}</code></p>`;
+            
+            if (rsa_p && rsa_q && rsa_e && rsa_d) {
+                 report += `<h2 class="${RSAStyles.h2} mt-6">Ringkasan Hasil</h2>`;
+                 report += `<table class="${RSAStyles.table}"><tbody>`;
+                 report += `<tr><td class="${RSAStyles.td}">Parameter</td><td class="${RSAStyles.td}">Nilai</td></tr>`;
+                 report += `<tr><td class="${RSAStyles.td}">p</td><td class="${RSAStyles.td}">${rsa_p}</td></tr>`;
+                 report += `<tr><td class="${RSAStyles.td}">q</td><td class="${RSAStyles.td}">${rsa_q}</td></tr>`;
+                 report += `<tr><td class="${RSAStyles.td}">n</td><td class="${RSAStyles.td}">${rsa_n}</td></tr>`;
+                 report += `<tr><td class="${RSAStyles.td}">φ(n)</td><td class="${RSAStyles.td}">${rsa_phi}</td></tr>`;
+                 report += `<tr><td class="${RSAStyles.td}">e</td><td class="${RSAStyles.td}">${rsa_e}</td></tr>`;
+                 report += `<tr><td class="${RSAStyles.td}">d</td><td class="${RSAStyles.td}">${rsa_d}</td></tr>`;
+                 const plain_p = document.getElementById('rsa-encrypt-p').value;
+                 if (plain_p) {
+                    report += `<tr><td class="${RSAStyles.td}">Plaintext (P)</td><td class="${RSAStyles.td}">${plain_p}</td></tr>`;
+                 }
+                 report += `<tr><td class="${RSAStyles.td}">Ciphertext (C)</td><td class="${RSAStyles.td}">${C}</td></tr>`;
+                 report += `</tbody></table>`;
+                 if (plain_p) {
+                    report += `<p class="${RSAStyles.p} mt-2">Verifikasi Berhasil: Dekripsi ciphertext ${C} menghasilkan plaintext asli ${P}.</p>`;
+                 }
+            }
+
+            tableContainer.innerHTML = report;
+            resultEl.textContent = P.toString();
+        }
     </script>
 </body>
 </html>
