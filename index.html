@@ -42,6 +42,7 @@
                     <li><a href="#" onclick="showContent('content-caesar')" class="nav-link block p-2 rounded-lg hover:bg-gray-700">Caesar Cipher</a></li>
                     <li><a href="#" onclick="showContent('content-vigenere')" class="nav-link block p-2 rounded-lg hover:bg-gray-700">Vigenere Cipher</a></li>
                     <li><a href="#" onclick="showContent('content-transposisi')" class="nav-link block p-2 rounded-lg hover:bg-gray-700">Transposisi Kolom</a></li>
+                    <li><a href="#" onclick="showContent('content-ecb')" class="nav-link block p-2 rounded-lg hover:bg-gray-700">Mode Operasi ECB</a></li>
                 </ul>
             </li>
 
@@ -300,6 +301,61 @@
             </div>
         </div>
 
+        <!-- Mode Operasi ECB -->
+        <div id="content-ecb" class="content-section hidden space-y-6">
+            <h2 class="text-3xl font-bold text-white mb-4">Mode Operasi: Electronic Codebook (ECB)</h2>
+            <p class="text-gray-300">
+                ECB adalah mode operasi block cipher yang paling sederhana. Setiap blok plaintext dienkripsi secara independen menggunakan kunci yang sama.
+            </p>
+            <div class="bg-red-900/50 border border-red-700 p-4 rounded-lg">
+                <h4 class="text-xl font-semibold text-red-300">Kelemahan Utama ECB</h4>
+                <p class="text-red-200 mt-2">
+                    Karena setiap blok plaintext yang identik akan selalu menghasilkan blok ciphertext yang identik, mode ini membocorkan pola data. 
+                    Ini membuatnya tidak aman untuk sebagian besar aplikasi. Misalnya, jika sebuah gambar dienkripsi dengan ECB, kontur gambar asli mungkin masih terlihat.
+                </p>
+            </div>
+            <!-- Alat Interaktif: ECB -->
+            <div class="bg-gray-800 p-6 rounded-lg shadow-lg mt-6">
+                <h3 class="text-2xl font-semibold mb-4">Alat Simulasi ECB</h3>
+                <p class="text-sm text-gray-400 mb-4">Masukkan teks yang memiliki beberapa kata berulang (contoh: "SERANG SERANG FAJAR") untuk melihat kelemahan ECB.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Input -->
+                    <div class="space-y-4">
+                        <div class="space-y-2">
+                            <label for="ecb-input" class="block font-medium text-gray-300">Plaintext:</label>
+                            <textarea id="ecb-input" rows="4" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="SERANG SERANG FAJAR"></textarea>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="space-y-2">
+                                <label for="ecb-key" class="block font-medium text-gray-300">Kunci:</label>
+                                <input type="text" id="ecb-key" value="KUNCI" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div class="space-y-2">
+                                <label for="ecb-blocksize" class="block font-medium text-gray-300">Ukuran Blok:</label>
+                                <input type="number" id="ecb-blocksize" value="6" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                        </div>
+                        <button onclick="ecbEncrypt()" class="w-full py-3 px-6 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 shadow-md transition duration-200">
+                            Enkripsi dengan ECB
+                        </button>
+                    </div>
+                    <!-- Output -->
+                    <div class="space-y-4">
+                        <h4 class="text-lg font-semibold text-gray-300">Ciphertext (Blok):</h4>
+                        <div id="ecb-result" class="w-full min-h-[100px] p-4 bg-gray-900 rounded-lg border border-gray-700 font-mono break-words flex flex-wrap gap-1">
+                            ...
+                        </div>
+                        <span id="ecb-error" class="text-red-400 text-sm hidden"></span>
+                        <div class="mt-4">
+                            <h4 class="text-lg font-semibold text-gray-300">Detail Enkripsi per Blok:</h4>
+                            <div id="ecb-table-container" class="mt-2"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Operasi XOR -->
         <div id="content-xor" class="content-section hidden space-y-6">
             <h2 class="text-3xl font-bold text-white mb-4">Kriptografi Modern: Operasi XOR</h2>
@@ -341,6 +397,20 @@
             <h2 class="text-3xl font-bold text-white mb-4">Kriptografi Asimetris: Algoritma RSA</h2>
             <p class="text-gray-300">Menggunakan sepasang kunci (Publik & Privat). Keamanannya bergantung pada kesulitan memfaktorkan bilangan prima yang sangat besar.</p>
             
+            <div class="space-y-4 bg-gray-800/50 p-4 rounded-lg border border-gray-700">
+                <h4 class="text-xl font-semibold text-white">Bagaimana Parameter RSA Dipilih?</h4>
+                <ul class="list-disc list-inside text-gray-300 space-y-2">
+                    <li>
+                        <span class="font-semibold text-blue-400">Bilangan Prima `p` dan `q`:</span>
+                        Dalam praktik nyata, `p` dan `q` adalah dua bilangan prima yang sangat besar (misalnya, dengan 2048 bit). Mereka dipilih secara acak dan harus dijaga kerahasiaannya. Keamanan RSA terletak pada fakta bahwa sangat sulit untuk menemukan `p` dan `q` jika hanya `n` (hasil perkaliannya) yang diketahui. Untuk demo ini, kita menggunakan bilangan prima kecil agar perhitungannya mudah diikuti.
+                    </li>
+                    <li>
+                        <span class="font-semibold text-green-400">Eksponen Publik `e`:</span>
+                        Nilai `e` dipilih dan tidak dihitung. Syaratnya adalah `1 < e < φ(n)` dan `e` harus relatif prima terhadap `φ(n)`. Artinya, Faktor Persekutuan Terbesar atau <code class="font-mono">gcd(e, φ(n))</code> harus sama dengan 1. Nilai `e` yang umum digunakan adalah 65537 karena efisien untuk enkripsi.
+                    </li>
+                </ul>
+            </div>
+
             <!-- Alat Interaktif: RSA -->
             <div class="bg-gray-800 p-6 rounded-lg shadow-lg space-y-6">
                 <!-- 1. Pembangkit Kunci -->
@@ -1202,6 +1272,92 @@ Kunci Privat (d, n): (${d}, ${n})
             tableHtml += `</tbody></table>`;
             tableContainer.innerHTML = tableHtml;
             resultEl.textContent = extractedMessage;
+        }
+
+        // --- Logika Mode Operasi ECB ---
+        function ecbEncrypt() {
+            const plaintext = document.getElementById('ecb-input').value.toUpperCase();
+            const key = document.getElementById('ecb-key').value.toUpperCase();
+            const blockSize = parseInt(document.getElementById('ecb-blocksize').value);
+            const resultEl = document.getElementById('ecb-result');
+            const errorEl = document.getElementById('ecb-error');
+            const tableContainer = document.getElementById('ecb-table-container');
+
+            errorEl.classList.add('hidden');
+            resultEl.innerHTML = '...';
+            tableContainer.innerHTML = '';
+
+            if (!plaintext || !key || !blockSize) {
+                errorEl.textContent = "Plaintext, Kunci, dan Ukuran Blok tidak boleh kosong.";
+                errorEl.classList.remove('hidden');
+                return;
+            }
+            if (blockSize <= 0) {
+                errorEl.textContent = "Ukuran Blok harus lebih besar dari 0.";
+                errorEl.classList.remove('hidden');
+                return;
+            }
+
+            // 1. Padding
+            let paddedText = plaintext;
+            const paddingNeeded = blockSize - (plaintext.length % blockSize);
+            if (paddingNeeded !== blockSize) {
+                paddedText += "X".repeat(paddingNeeded);
+            }
+
+            // 2. Blocking
+            const blocks = [];
+            for (let i = 0; i < paddedText.length; i += blockSize) {
+                blocks.push(paddedText.substring(i, i + blockSize));
+            }
+
+            // 3. Encryption & Analysis
+            const ciphertextBlocks = [];
+            const blockColors = {};
+            const colors = ['bg-sky-700', 'bg-amber-700', 'bg-rose-700', 'bg-teal-700', 'bg-indigo-700', 'bg-pink-700'];
+            let colorIndex = 0;
+            
+            let tableHtml = `<table class="w-full text-sm text-left text-gray-300 font-mono">
+                                <thead class="bg-gray-700 text-gray-100"><tr>
+                                    <th class="px-4 py-2">Plaintext Block</th>
+                                    <th class="px-4 py-2">Ciphertext Block</th>
+                                </tr></thead><tbody>`;
+
+            resultEl.innerHTML = ''; // Clear previous results
+
+            blocks.forEach(block => {
+                // Simple Vigenere-like XOR encryption for demonstration
+                let ciphertextBlock = '';
+                for (let i = 0; i < block.length; i++) {
+                    const p_char = block.charCodeAt(i) - 65;
+                    const k_char = key.charCodeAt(i % key.length) - 65;
+                    const c_char = String.fromCharCode(((p_char + k_char) % 26) + 65);
+                    ciphertextBlock += c_char;
+                }
+                ciphertextBlocks.push(ciphertextBlock);
+
+                // Assign color for visualization
+                if (blockColors[ciphertextBlock] === undefined) {
+                    blockColors[ciphertextBlock] = colors[colorIndex % colors.length];
+                    colorIndex++;
+                }
+                const color = blockColors[ciphertextBlock];
+
+                // Append to result view
+                const blockSpan = document.createElement('span');
+                blockSpan.className = `p-2 rounded-md text-white ${color}`;
+                blockSpan.textContent = ciphertextBlock;
+                resultEl.appendChild(blockSpan);
+
+                // Append to table view
+                tableHtml += `<tr class="border-b border-gray-700">
+                                <td class="px-4 py-2">${block}</td>
+                                <td class="px-4 py-2 ${color.replace('bg', 'text')} font-semibold">${ciphertextBlock}</td>
+                              </tr>`;
+            });
+            
+            tableHtml += `</tbody></table>`;
+            tableContainer.innerHTML = tableHtml;
         }
 
 
