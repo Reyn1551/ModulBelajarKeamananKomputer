@@ -26,11 +26,29 @@
         }
     </style>
 </head>
-<body class="bg-gray-900 text-gray-100 flex">
+<body class="bg-gray-900 text-gray-100">
+
+    <!-- Tombol Hamburger Menu (hanya terlihat di mobile) -->
+    <button id="menu-btn" class="fixed top-4 left-4 z-30 p-2 bg-gray-800 rounded-md lg:hidden">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+        </svg>
+    </button>
+
+    <!-- Overlay untuk latar belakang saat sidebar terbuka di mobile -->
+    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 z-10 hidden lg:hidden"></div>
 
     <!-- Navigasi Sidebar -->
-    <nav class="fixed top-0 left-0 w-64 h-full bg-gray-800 p-6 overflow-y-auto shadow-lg z-10">
-        <h1 class="text-2xl font-bold text-white mb-8">Pusat Kripto</h1>
+    <nav id="sidebar" class="fixed top-0 left-0 w-64 h-full bg-gray-800 p-6 overflow-y-auto shadow-lg z-20 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out">
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-2xl font-bold text-white">Pusat Kripto</h1>
+            <!-- Tombol close untuk mobile -->
+            <button id="close-btn" class="lg:hidden p-1">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
         <ul class="space-y-3">
             <li><a href="#" onclick="showContent('content-home')" class="nav-link block p-3 rounded-lg bg-blue-600 text-white font-semibold">Beranda</a></li>
             <li><a href="#" onclick="showContent('content-cia')" class="nav-link block p-3 rounded-lg hover:bg-gray-700">Dasar Keamanan (CIA)</a></li>
@@ -64,7 +82,7 @@
     </nav>
 
     <!-- Konten Utama -->
-    <main class="ml-64 w-full p-10 bg-gray-900">
+    <main class="w-full p-10 bg-gray-900 lg:ml-64">
 
         <!-- Beranda -->
         <div id="content-home" class="content-section space-y-6">
@@ -88,7 +106,7 @@
         <!-- Dasar Keamanan (CIA) -->
         <div id="content-cia" class="content-section hidden space-y-6">
             <h2 class="text-3xl font-bold text-white mb-4">Dasar Keamanan (CIA Triad)</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <!-- Card Confidentiality -->
                 <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
                     <h3 class="text-2xl font-semibold text-blue-400 mb-3">1. Confidentiality (Kerahasiaan)</h3>
@@ -124,7 +142,7 @@
             <!-- Alat Interaktif: Konverter Bilangan -->
             <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
                 <h3 class="text-2xl font-semibold mb-4">Alat Konverter Bilangan</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <!-- Input -->
                     <div class="space-y-4">
                         <div class="space-y-2">
@@ -179,7 +197,7 @@
             <!-- Alat Interaktif: Caesar Cipher -->
             <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
                 <h3 class="text-2xl font-semibold mb-4">Alat Caesar Cipher</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <!-- Input -->
                     <div class="space-y-4">
                         <div class="space-y-2">
@@ -225,7 +243,7 @@
             <!-- Alat Interaktif: Vigenere Cipher -->
             <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
                 <h3 class="text-2xl font-semibold mb-4">Alat Vigenere Cipher</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <!-- Input -->
                     <div class="space-y-4">
                         <div class="space-y-2">
@@ -267,7 +285,7 @@
             <!-- Alat Interaktif: Transposisi Kolom -->
             <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
                 <h3 class="text-2xl font-semibold mb-4">Alat Transposisi Kolom</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <!-- Input -->
                     <div class="space-y-4">
                         <div class="space-y-2">
@@ -319,7 +337,7 @@
                 <h3 class="text-2xl font-semibold mb-4">Alat Simulasi ECB</h3>
                 <p class="text-sm text-gray-400 mb-4">Masukkan teks yang memiliki beberapa kata berulang (contoh: "SERANG SERANG FAJAR") untuk melihat kelemahan ECB.</p>
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <!-- Input -->
                     <div class="space-y-4">
                         <div class="space-y-2">
@@ -416,7 +434,7 @@
                 <!-- 1. Pembangkit Kunci -->
                 <div class="space-y-4">
                     <h3 class="text-2xl font-semibold border-b border-gray-600 pb-2">1. Pembangkit Kunci (Key Setup)</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                         <div class="space-y-2">
                             <label for="rsa-p" class="block font-medium text-gray-300">Prima `p`:</label>
                             <input type="number" id="rsa-p" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white" value="5">
@@ -448,7 +466,7 @@
                 <!-- 2. Enkripsi -->
                 <div class="space-y-4">
                     <h3 class="text-2xl font-semibold border-b border-gray-600 pb-2">2. Enkripsi (Gunakan Kunci Publik)</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
                         <div class="space-y-2">
                             <label for="rsa-encrypt-p" class="block font-medium text-gray-300">Pesan (Angka `P`):</label>
                             <input type="number" id="rsa-encrypt-p" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white" placeholder="Contoh: 8">
@@ -472,7 +490,7 @@
                 <!-- 3. Dekripsi -->
                 <div class="space-y-4">
                     <h3 class="text-2xl font-semibold border-b border-gray-600 pb-2">3. Dekripsi (Gunakan Kunci Privat)</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
                         <div class="space-y-2">
                             <label for="rsa-decrypt-c" class="block font-medium text-gray-300">Ciphertext (Angka `C`):</label>
                             <input type="number" id="rsa-decrypt-c" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white" placeholder="Contoh: 17">
@@ -503,7 +521,7 @@
             <!-- Alat Interaktif: LSB -->
             <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
                 <h3 class="text-2xl font-semibold mb-4">Alat Simulasi LSB</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <!-- Input -->
                     <div class="space-y-4">
                         <div class="space-y-2">
@@ -538,8 +556,29 @@
 
     <!-- JavaScript untuk Interaktivitas -->
     <script>
+        const sidebar = document.getElementById('sidebar');
+        const menuBtn = document.getElementById('menu-btn');
+        const closeBtn = document.getElementById('close-btn');
+        const overlay = document.getElementById('overlay');
         const navLinks = document.querySelectorAll('.nav-link');
         const contentSections = document.querySelectorAll('.content-section');
+
+        // Fungsi untuk membuka sidebar
+        function openSidebar() {
+            sidebar.classList.remove('-translate-x-full');
+            overlay.classList.remove('hidden');
+        }
+
+        // Fungsi untuk menutup sidebar
+        function closeSidebar() {
+            sidebar.classList.add('-translate-x-full');
+            overlay.classList.add('hidden');
+        }
+
+        // Event listener untuk tombol
+        menuBtn.addEventListener('click', openSidebar);
+        closeBtn.addEventListener('click', closeSidebar);
+        overlay.addEventListener('click', closeSidebar);
 
         // Fungsi untuk menampilkan konten yang dipilih
         function showContent(id) {
@@ -557,6 +596,11 @@
                     link.classList.remove('hover:bg-gray-700');
                 }
             });
+
+            // Tutup sidebar setelah link diklik (berguna di mobile)
+            if (window.innerWidth < 1024) {
+                closeSidebar();
+            }
         }
 
         // --- Logika Konverter Bilangan ---
