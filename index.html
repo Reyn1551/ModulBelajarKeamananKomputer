@@ -1,0 +1,1458 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pusat Kriptografi Interaktif</title>
+    <!-- Memuat Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Memuat font Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Mengatur font default ke Inter */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Mencegah tombol spin di input number */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100 flex">
+
+    <!-- Navigasi Sidebar -->
+    <nav class="fixed top-0 left-0 w-64 h-full bg-gray-800 p-6 overflow-y-auto shadow-lg z-10">
+        <h1 class="text-2xl font-bold text-white mb-8">Pusat Kripto</h1>
+        <ul class="space-y-3">
+            <li><a href="#" onclick="showContent('content-home')" class="nav-link block p-3 rounded-lg bg-blue-600 text-white font-semibold">Beranda</a></li>
+            <li><a href="#" onclick="showContent('content-cia')" class="nav-link block p-3 rounded-lg hover:bg-gray-700">Dasar Keamanan (CIA)</a></li>
+            <li><a href="#" onclick="showContent('content-converter')" class="nav-link block p-3 rounded-lg hover:bg-gray-700">Teori Bilangan</a></li>
+            
+            <li class="pt-4">
+                <h2 class="text-xs uppercase text-gray-400 font-semibold mb-2">Kriptografi Simetris</h2>
+                <ul class="space-y-2 pl-3 border-l border-gray-600">
+                    <li><a href="#" onclick="showContent('content-caesar')" class="nav-link block p-2 rounded-lg hover:bg-gray-700">Caesar Cipher</a></li>
+                    <li><a href="#" onclick="showContent('content-vigenere')" class="nav-link block p-2 rounded-lg hover:bg-gray-700">Vigenere Cipher</a></li>
+                    <li><a href="#" onclick="showContent('content-transposisi')" class="nav-link block p-2 rounded-lg hover:bg-gray-700">Transposisi Kolom</a></li>
+                    <li><a href="#" onclick="showContent('content-ecb')" class="nav-link block p-2 rounded-lg hover:bg-gray-700">Mode Operasi ECB</a></li>
+                </ul>
+            </li>
+
+            <li class="pt-4">
+                <h2 class="text-xs uppercase text-gray-400 font-semibold mb-2">Kriptografi Asimetris</h2>
+                <ul class="space-y-2 pl-3 border-l border-gray-600">
+                    <li><a href="#" onclick="showContent('content-xor')" class="nav-link block p-2 rounded-lg hover:bg-gray-700">Operasi XOR</a></li>
+                    <li><a href="#" onclick="showContent('content-rsa')" class="nav-link block p-2 rounded-lg hover:bg-gray-700">Algoritma RSA</a></li>
+                </ul>
+            </li>
+            
+            <li class="pt-4">
+                <h2 class="text-xs uppercase text-gray-400 font-semibold mb-2">Penyembunyian Info</h2>
+                <ul class="space-y-2 pl-3 border-l border-gray-600">
+                    <li><a href="#" onclick="showContent('content-lsb')" class="nav-link block p-2 rounded-lg hover:bg-gray-700">Steganografi (LSB)</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Konten Utama -->
+    <main class="ml-64 w-full p-10 bg-gray-900">
+
+        <!-- Beranda -->
+        <div id="content-home" class="content-section space-y-6">
+            <h2 class="text-4xl font-bold text-white">Selamat Datang di Pusat Kriptografi Interaktif</h2>
+            <p class="text-lg text-gray-300">
+                Website ini adalah rangkuman interaktif dari materi kuliah Keamanan Komputer Anda.
+                Gunakan menu di sebelah kiri untuk menjelajahi setiap topik. Anda tidak hanya bisa membaca teori,
+                tetapi juga langsung mencoba setiap algoritma!
+            </p>
+            <div class="p-6 bg-blue-900 border border-blue-700 rounded-xl shadow-lg">
+                <h3 class="text-2xl font-semibold mb-3">Cara Menggunakan</h3>
+                <ol class="list-decimal list-inside space-y-2 text-blue-100">
+                    <li>Pilih materi dari menu navigasi di sebelah kiri.</li>
+                    <li>Baca penjelasan singkat untuk mengingat kembali konsepnya.</li>
+                    <li>Gunakan "Alat Interaktif" di setiap bagian untuk melakukan enkripsi, dekripsi, atau konversi.</li>
+                    <li>Eksperimen dengan input yang berbeda untuk melihat cara kerja setiap algoritma.</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Dasar Keamanan (CIA) -->
+        <div id="content-cia" class="content-section hidden space-y-6">
+            <h2 class="text-3xl font-bold text-white mb-4">Dasar Keamanan (CIA Triad)</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Card Confidentiality -->
+                <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+                    <h3 class="text-2xl font-semibold text-blue-400 mb-3">1. Confidentiality (Kerahasiaan)</h3>
+                    <p class="text-gray-300">
+                        Menjamin bahwa data hanya bisa diakses oleh pihak yang berwenang. Ini adalah tentang menjaga rahasia.
+                    </p>
+                    <p class="mt-3 text-sm text-gray-400"><span class="font-semibold">Solusi Utama:</span> Enkripsi.</p>
+                </div>
+                <!-- Card Integrity -->
+                <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+                    <h3 class="text-2xl font-semibold text-green-400 mb-3">2. Integrity (Integritas)</h3>
+                    <p class="text-gray-300">
+                        Menjamin bahwa data tetap utuh, akurat, dan tidak diubah oleh pihak yang tidak sah selama transmisi atau penyimpanan.
+                    </p>
+                    <p class="mt-3 text-sm text-gray-400"><span class="font-semibold">Solusi Utama:</span> Tanda Tangan Digital, Hash.</p>
+                </div>
+                <!-- Card Availability -->
+                <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+                    <h3 class="text-2xl font-semibold text-yellow-400 mb-3">3. Availability (Ketersediaan)</h3>
+                    <p class="text-gray-300">
+                        Menjamin bahwa sistem dan data selalu dapat diakses dan digunakan oleh pengguna yang sah kapanpun dibutuhkan.
+                    </p>
+                    <p class="mt-3 text-sm text-gray-400"><span class="font-semibold">Ancaman Umum:</span> Serangan DoS (Denial of Service).</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Teori Bilangan -->
+        <div id="content-converter" class="content-section hidden space-y-6">
+            <h2 class="text-3xl font-bold text-white mb-4">Teori Bilangan: Konverter Sistem Bilangan</h2>
+            <p class="text-gray-300">Konversi antar sistem bilangan (desimal, biner, hexadesimal) adalah dasar dari komputasi dan kriptografi modern.</p>
+            
+            <!-- Alat Interaktif: Konverter Bilangan -->
+            <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+                <h3 class="text-2xl font-semibold mb-4">Alat Konverter Bilangan</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Input -->
+                    <div class="space-y-4">
+                        <div class="space-y-2">
+                            <label for="conv-input" class="block font-medium text-gray-300">Masukkan Angka:</label>
+                            <input type="text" id="conv-input" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Contoh: 123 atau 1101 atau 7B">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="space-y-2">
+                                <label for="conv-from" class="block font-medium text-gray-300">Dari Basis:</label>
+                                <select id="conv-from" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="10" selected>Desimal (10)</option>
+                                    <option value="2">Biner (2)</option>
+                                    <option value="16">Hexadesimal (16)</option>
+                                </select>
+                            </div>
+                            <div class="space-y-2">
+                                <label for="conv-to" class="block font-medium text-gray-300">Ke Basis:</label>
+                                <select id="conv-to" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="10">Desimal (10)</option>
+                                    <option value="2" selected>Biner (2)</option>
+                                    <option value="16">Hexadesimal (16)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button onclick="convertNumber()" class="w-full py-3 px-6 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-md transition duration-200">
+                            Konversi
+                        </button>
+                    </div>
+                    <!-- Output -->
+                    <div class="space-y-4">
+                        <h4 class="text-lg font-semibold text-gray-300">Hasil Konversi:</h4>
+                        <div id="conv-result" class="w-full min-h-[50px] p-4 bg-gray-900 rounded-lg border border-gray-700 text-lg text-green-400 font-mono break-words">
+                            ...
+                        </div>
+                        <span id="conv-error" class="text-red-400 text-sm hidden"></span>
+                        <div id="conv-table-container" class="mt-4"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Caesar Cipher -->
+        <div id="content-caesar" class="content-section hidden space-y-6">
+            <h2 class="text-3xl font-bold text-white mb-4">Kriptografi Simetris: Caesar Cipher</h2>
+            <p class="text-gray-300">Metode substitusi paling sederhana, di mana setiap huruf dalam plaintext digeser sejumlah `k` posisi dalam alfabet.
+                <br>
+                <code class="text-sm bg-gray-700 p-1 rounded">Enkripsi: C = (P + k) mod 26</code>
+                <br>
+                <code class="text-sm bg-gray-700 p-1 rounded">Dekripsi: P = (C - k) mod 26</code>
+            </p>
+            
+            <!-- Alat Interaktif: Caesar Cipher -->
+            <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+                <h3 class="text-2xl font-semibold mb-4">Alat Caesar Cipher</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Input -->
+                    <div class="space-y-4">
+                        <div class="space-y-2">
+                            <label for="caesar-input" class="block font-medium text-gray-300">Teks (Input):</label>
+                            <textarea id="caesar-input" rows="4" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Masukkan teks di sini..."></textarea>
+                        </div>
+                        <div class="space-y-2">
+                            <label for="caesar-key" class="block font-medium text-gray-300">Kunci Pergeseran (Angka 1-25):</label>
+                            <input type="number" id="caesar-key" value="3" min="1" max="25" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div class="flex space-x-4">
+                            <button onclick="caesarCipher('encrypt')" class="w-full py-3 px-6 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 shadow-md transition duration-200">
+                                Enkripsi
+                            </button>
+                            <button onclick="caesarCipher('decrypt')" class="w-full py-3 px-6 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 shadow-md transition duration-200">
+                                Dekripsi
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Output -->
+                    <div class="space-y-4">
+                        <h4 class="text-lg font-semibold text-gray-300">Teks (Output):</h4>
+                        <pre id="caesar-result" class="w-full min-h-[100px] p-4 bg-gray-900 rounded-lg border border-gray-700 text-lg text-green-400 font-mono break-words overflow-auto">...</pre>
+                        <div class="mt-4">
+                            <h4 class="text-lg font-semibold text-gray-300">Detail Perhitungan:</h4>
+                            <div id="caesar-table-container" class="mt-2"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vigenere Cipher -->
+        <div id="content-vigenere" class="content-section hidden space-y-6">
+            <h2 class="text-3xl font-bold text-white mb-4">Kriptografi Simetris: Vigenere Cipher</h2>
+            <p class="text-gray-300">Peningkatan dari Caesar, Vigenere menggunakan kata kunci untuk menggeser huruf dengan jumlah yang bervariasi, membuatnya lebih sulit dipecahkan.
+                <br>
+                <code class="text-sm bg-gray-700 p-1 rounded">Enkripsi: Ci = (Pi + ki) mod 26</code>
+                <br>
+                <code class="text-sm bg-gray-700 p-1 rounded">Dekripsi: Pi = (Ci - ki) mod 26</code>
+            </p>
+            
+            <!-- Alat Interaktif: Vigenere Cipher -->
+            <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+                <h3 class="text-2xl font-semibold mb-4">Alat Vigenere Cipher</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Input -->
+                    <div class="space-y-4">
+                        <div class="space-y-2">
+                            <label for="vigenere-input" class="block font-medium text-gray-300">Teks (Input):</label>
+                            <textarea id="vigenere-input" rows="4" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Masukkan teks di sini..."></textarea>
+                        </div>
+                        <div class="space-y-2">
+                            <label for="vigenere-key" class="block font-medium text-gray-300">Kata Kunci (Contoh: AMAN):</label>
+                            <input type="text" id="vigenere-key" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Hanya huruf, tanpa spasi">
+                        </div>
+                        <div class="flex space-x-4">
+                            <button onclick="vigenereCipher('encrypt')" class="w-full py-3 px-6 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 shadow-md transition duration-200">
+                                Enkripsi
+                            </button>
+                            <button onclick="vigenereCipher('decrypt')" class="w-full py-3 px-6 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 shadow-md transition duration-200">
+                                Dekripsi
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Output -->
+                    <div class="space-y-4">
+                        <h4 class="text-lg font-semibold text-gray-300">Teks (Output):</h4>
+                        <pre id="vigenere-result" class="w-full min-h-[100px] p-4 bg-gray-900 rounded-lg border border-gray-700 text-lg text-green-400 font-mono break-words overflow-auto">...</pre>
+                        <span id="vigenere-error" class="text-red-400 text-sm hidden"></span>
+                        <div class="mt-4">
+                            <h4 class="text-lg font-semibold text-gray-300">Detail Perhitungan:</h4>
+                            <div id="vigenere-table-container" class="mt-2"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Transposisi Kolom -->
+        <div id="content-transposisi" class="content-section hidden space-y-6">
+            <h2 class="text-3xl font-bold text-white mb-4">Kriptografi Simetris: Transposisi Kolom</h2>
+            <p class="text-gray-300">Metode ini tidak mengubah huruf, tetapi mengubah *posisi* huruf. Plaintext ditulis dalam grid dan dibaca per kolom berdasarkan urutan kata kunci.</p>
+            
+            <!-- Alat Interaktif: Transposisi Kolom -->
+            <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+                <h3 class="text-2xl font-semibold mb-4">Alat Transposisi Kolom</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Input -->
+                    <div class="space-y-4">
+                        <div class="space-y-2">
+                            <label for="transposisi-input" class="block font-medium text-gray-300">Teks (Input):</label>
+                            <textarea id="transposisi-input" rows="4" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Masukkan teks di sini..."></textarea>
+                        </div>
+                        <div class="space-y-2">
+                            <label for="transposisi-key" class="block font-medium text-gray-300">Kata Kunci (Contoh: UAD):</label>
+                            <input type="text" id="transposisi-key" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Hanya huruf, tanpa spasi">
+                        </div>
+                        <div class="flex space-x-4">
+                            <button onclick="transpositionCipher('encrypt')" class="w-full py-3 px-6 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 shadow-md transition duration-200">
+                                Enkripsi
+                            </button>
+                            <button onclick="transpositionCipher('decrypt')" class="w-full py-3 px-6 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 shadow-md transition duration-200">
+                                Dekripsi
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Output -->
+                    <div class="space-y-4">
+                        <h4 class="text-lg font-semibold text-gray-300">Teks (Output):</h4>
+                        <pre id="transposisi-result" class="w-full min-h-[100px] p-4 bg-gray-900 rounded-lg border border-gray-700 text-lg text-green-400 font-mono break-words overflow-auto">...</pre>
+                        <span id="transposisi-error" class="text-red-400 text-sm hidden"></span>
+                        <div class="mt-4">
+                            <h4 class="text-lg font-semibold text-gray-300">Detail Perhitungan (Grid):</h4>
+                            <div id="transposisi-table-container" class="mt-2"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mode Operasi ECB -->
+        <div id="content-ecb" class="content-section hidden space-y-6">
+            <h2 class="text-3xl font-bold text-white mb-4">Mode Operasi: Electronic Codebook (ECB)</h2>
+            <p class="text-gray-300">
+                ECB adalah mode operasi block cipher yang paling sederhana. Setiap blok plaintext dienkripsi secara independen menggunakan kunci yang sama.
+            </p>
+            <div class="bg-red-900/50 border border-red-700 p-4 rounded-lg">
+                <h4 class="text-xl font-semibold text-red-300">Kelemahan Utama ECB</h4>
+                <p class="text-red-200 mt-2">
+                    Karena setiap blok plaintext yang identik akan selalu menghasilkan blok ciphertext yang identik, mode ini membocorkan pola data. 
+                    Ini membuatnya tidak aman untuk sebagian besar aplikasi. Misalnya, jika sebuah gambar dienkripsi dengan ECB, kontur gambar asli mungkin masih terlihat.
+                </p>
+            </div>
+            <!-- Alat Interaktif: ECB -->
+            <div class="bg-gray-800 p-6 rounded-lg shadow-lg mt-6">
+                <h3 class="text-2xl font-semibold mb-4">Alat Simulasi ECB</h3>
+                <p class="text-sm text-gray-400 mb-4">Masukkan teks yang memiliki beberapa kata berulang (contoh: "SERANG SERANG FAJAR") untuk melihat kelemahan ECB.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Input -->
+                    <div class="space-y-4">
+                        <div class="space-y-2">
+                            <label for="ecb-input" class="block font-medium text-gray-300">Plaintext:</label>
+                            <textarea id="ecb-input" rows="4" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="SERANG SERANG FAJAR"></textarea>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="space-y-2">
+                                <label for="ecb-key" class="block font-medium text-gray-300">Kunci:</label>
+                                <input type="text" id="ecb-key" value="KUNCI" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div class="space-y-2">
+                                <label for="ecb-blocksize" class="block font-medium text-gray-300">Ukuran Blok:</label>
+                                <input type="number" id="ecb-blocksize" value="6" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                        </div>
+                        <button onclick="ecbEncrypt()" class="w-full py-3 px-6 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 shadow-md transition duration-200">
+                            Enkripsi dengan ECB
+                        </button>
+                    </div>
+                    <!-- Output -->
+                    <div class="space-y-4">
+                        <h4 class="text-lg font-semibold text-gray-300">Ciphertext (Blok):</h4>
+                        <div id="ecb-result" class="w-full min-h-[100px] p-4 bg-gray-900 rounded-lg border border-gray-700 font-mono break-words flex flex-wrap gap-1">
+                            ...
+                        </div>
+                        <span id="ecb-error" class="text-red-400 text-sm hidden"></span>
+                        <div class="mt-4">
+                            <h4 class="text-lg font-semibold text-gray-300">Detail Enkripsi per Blok:</h4>
+                            <div id="ecb-table-container" class="mt-2"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Operasi XOR -->
+        <div id="content-xor" class="content-section hidden space-y-6">
+            <h2 class="text-3xl font-bold text-white mb-4">Kriptografi Modern: Operasi XOR</h2>
+            <p class="text-gray-300">Operasi bitwise XOR (Exclusive OR) adalah dasar dari banyak cipher modern. Sifatnya: `A ⊕ B = C` dan `C ⊕ B = A`. Sempurna untuk enkripsi/dekripsi.
+                <br>
+                <code class="text-sm bg-gray-700 p-1 rounded">0 ⊕ 0 = 0</code> | <code class="text-sm bg-gray-700 p-1 rounded">0 ⊕ 1 = 1</code> | <code class="text-sm bg-gray-700 p-1 rounded">1 ⊕ 0 = 1</code> | <code class="text-sm bg-gray-700 p-1 rounded">1 ⊕ 1 = 0</code>
+            </p>
+            
+            <!-- Alat Interaktif: XOR -->
+            <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+                <h3 class="text-2xl font-semibold mb-4">Alat Kalkulator XOR (Biner)</h3>
+                <div class="space-y-4">
+                    <div class="space-y-2">
+                        <label for="xor-a" class="block font-medium text-gray-300">Input A (Biner):</label>
+                        <input type="text" id="xor-a" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Contoh: 10110010">
+                    </div>
+                    <div class="space-y-2">
+                        <label for="xor-b" class="block font-medium text-gray-300">Input B (Kunci Biner):</label>
+                        <input type="text" id="xor-b" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Contoh: 01011100">
+                    </div>
+                    <button onclick="calculateXOR()" class="w-full py-3 px-6 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-md transition duration-200">
+                        Hitung XOR (A ⊕ B)
+                    </button>
+                    <div class="space-y-2">
+                        <h4 class="text-lg font-semibold text-gray-300">Hasil (Output C):</h4>
+                        <pre id="xor-result" class="w-full p-4 bg-gray-900 rounded-lg border border-gray-700 text-lg text-green-400 font-mono break-words">...</pre>
+                        <span id="xor-error" class="text-red-400 text-sm hidden"></span>
+                        <div class="mt-4">
+                            <h4 class="text-lg font-semibold text-gray-300">Detail Perhitungan:</h4>
+                            <div id="xor-table-container" class="mt-2"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Algoritma RSA -->
+        <div id="content-rsa" class="content-section hidden space-y-6">
+            <h2 class="text-3xl font-bold text-white mb-4">Kriptografi Asimetris: Algoritma RSA</h2>
+            <p class="text-gray-300">Menggunakan sepasang kunci (Publik & Privat). Keamanannya bergantung pada kesulitan memfaktorkan bilangan prima yang sangat besar.</p>
+            
+            <div class="space-y-4 bg-gray-800/50 p-4 rounded-lg border border-gray-700">
+                <h4 class="text-xl font-semibold text-white">Bagaimana Parameter RSA Dipilih?</h4>
+                <ul class="list-disc list-inside text-gray-300 space-y-2">
+                    <li>
+                        <span class="font-semibold text-blue-400">Bilangan Prima `p` dan `q`:</span>
+                        Dalam praktik nyata, `p` dan `q` adalah dua bilangan prima yang sangat besar (misalnya, dengan 2048 bit). Mereka dipilih secara acak dan harus dijaga kerahasiaannya. Keamanan RSA terletak pada fakta bahwa sangat sulit untuk menemukan `p` dan `q` jika hanya `n` (hasil perkaliannya) yang diketahui. Untuk demo ini, kita menggunakan bilangan prima kecil agar perhitungannya mudah diikuti.
+                    </li>
+                    <li>
+                        <span class="font-semibold text-green-400">Eksponen Publik `e`:</span>
+                        Nilai `e` dipilih dan tidak dihitung. Syaratnya adalah `1 < e < φ(n)` dan `e` harus relatif prima terhadap `φ(n)`. Artinya, Faktor Persekutuan Terbesar atau <code class="font-mono">gcd(e, φ(n))</code> harus sama dengan 1. Nilai `e` yang umum digunakan adalah 65537 karena efisien untuk enkripsi.
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Alat Interaktif: RSA -->
+            <div class="bg-gray-800 p-6 rounded-lg shadow-lg space-y-6">
+                <!-- 1. Pembangkit Kunci -->
+                <div class="space-y-4">
+                    <h3 class="text-2xl font-semibold border-b border-gray-600 pb-2">1. Pembangkit Kunci (Key Setup)</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="space-y-2">
+                            <label for="rsa-p" class="block font-medium text-gray-300">Prima `p`:</label>
+                            <input type="number" id="rsa-p" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white" value="5">
+                        </div>
+                        <div class="space-y-2">
+                            <label for="rsa-q" class="block font-medium text-gray-300">Prima `q`:</label>
+                            <input type="number" id="rsa-q" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white" value="11">
+                        </div>
+                    </div>
+                    <button onclick="findEChoices()" class="w-full py-3 px-6 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 shadow-md">
+                        1. Hitung φ(n) dan Cari Pilihan e
+                    </button>
+                    
+                    <div id="rsa-e-selection-container" class="hidden space-y-4 mt-4">
+                        <div class="space-y-2">
+                            <label for="rsa-e-select" class="block font-medium text-gray-300">Pilih nilai `e` (yang relatif prima dengan φ(n)):</label>
+                            <select id="rsa-e-select" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white"></select>
+                        </div>
+                        <button onclick="generateRSAKeys()" class="w-full py-3 px-6 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 shadow-md">
+                            2. Hasilkan Kunci dengan `e` yang Dipilih
+                        </button>
+                    </div>
+
+                    <pre id="rsa-keys-result" class="w-full p-4 bg-gray-900 rounded-lg border border-gray-700 text-sm text-green-400 font-mono break-words overflow-auto mt-4">...</pre>
+                    <span id="rsa-keys-error" class="text-red-400 text-sm hidden"></span>
+                    <div id="rsa-keys-table-container" class="mt-2"></div>
+                </div>
+
+                <!-- 2. Enkripsi -->
+                <div class="space-y-4">
+                    <h3 class="text-2xl font-semibold border-b border-gray-600 pb-2">2. Enkripsi (Gunakan Kunci Publik)</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="space-y-2">
+                            <label for="rsa-encrypt-p" class="block font-medium text-gray-300">Pesan (Angka `P`):</label>
+                            <input type="number" id="rsa-encrypt-p" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white" placeholder="Contoh: 8">
+                        </div>
+                        <div class="space-y-2">
+                            <label for="rsa-encrypt-e" class="block font-medium text-gray-300">Kunci `e` (Publik):</label>
+                            <input type="number" id="rsa-encrypt-e" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white" placeholder="Contoh: 3">
+                        </div>
+                        <div class="space-y-2">
+                            <label for="rsa-encrypt-n" class="block font-medium text-gray-300">Modulus `n` (Publik):</label>
+                            <input type="number" id="rsa-encrypt-n" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white" placeholder="Contoh: 55">
+                        </div>
+                    </div>
+                    <button onclick="encryptRSA()" class="w-full py-3 px-6 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 shadow-md">
+                        Enkripsi (C = P^e mod n)
+                    </button>
+                    <pre id="rsa-encrypt-result" class="w-full p-4 bg-gray-900 rounded-lg border border-gray-700 text-lg text-green-400 font-mono">...</pre>
+                    <div id="rsa-encrypt-table-container" class="mt-2"></div>
+                </div>
+
+                <!-- 3. Dekripsi -->
+                <div class="space-y-4">
+                    <h3 class="text-2xl font-semibold border-b border-gray-600 pb-2">3. Dekripsi (Gunakan Kunci Privat)</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="space-y-2">
+                            <label for="rsa-decrypt-c" class="block font-medium text-gray-300">Ciphertext (Angka `C`):</label>
+                            <input type="number" id="rsa-decrypt-c" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white" placeholder="Contoh: 17">
+                        </div>
+                        <div class="space-y-2">
+                            <label for="rsa-decrypt-d" class="block font-medium text-gray-300">Kunci `d` (Privat):</label>
+                            <input type="number" id="rsa-decrypt-d" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white" placeholder="Contoh: 27">
+                        </div>
+                        <div class="space-y-2">
+                            <label for="rsa-decrypt-n" class="block font-medium text-gray-300">Modulus `n` (Publik):</label>
+                            <input type="number" id="rsa-decrypt-n" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white" placeholder="Contoh: 55">
+                        </div>
+                    </div>
+                    <button onclick="decryptRSA()" class="w-full py-3 px-6 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 shadow-md">
+                        Dekripsi (P = C^d mod n)
+                    </button>
+                    <pre id="rsa-decrypt-result" class="w-full p-4 bg-gray-900 rounded-lg border border-gray-700 text-lg text-green-400 font-mono">...</pre>
+                    <div id="rsa-decrypt-table-container" class="mt-2"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Steganografi LSB -->
+        <div id="content-lsb" class="content-section hidden space-y-6">
+            <h2 class="text-3xl font-bold text-white mb-4">Steganografi: Simulasi LSB</h2>
+            <p class="text-gray-300">Steganografi menyembunyikan *keberadaan* pesan. Metode LSB (Least Significant Bit) mengganti bit terakhir dari data media (misal: byte pixel) dengan bit pesan rahasia.</p>
+            
+            <!-- Alat Interaktif: LSB -->
+            <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+                <h3 class="text-2xl font-semibold mb-4">Alat Simulasi LSB</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Input -->
+                    <div class="space-y-4">
+                        <div class="space-y-2">
+                            <label for="lsb-bytes" class="block font-medium text-gray-300">Data Byte (Cover, pisahkan dengan koma):</label>
+                            <textarea id="lsb-bytes" rows="3" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white font-mono focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Contoh: 10100110, 11001001, 00010110"></textarea>
+                        </div>
+                        <div class="space-y-2">
+                            <label for="lsb-message" class="block font-medium text-gray-300">Pesan Biner (Hidden):</label>
+                            <input type="text" id="lsb-message" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white font-mono focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Contoh: 101">
+                        </div>
+                        <button onclick="lsbEmbed()" class="w-full py-3 px-6 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 shadow-md transition duration-200">
+                            Sisipkan Pesan (Embed)
+                        </button>
+                        <button onclick="lsbExtract()" class="w-full py-3 px-6 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 shadow-md transition duration-200">
+                            Ekstraksi Pesan (Extract)
+                        </button>
+                    </div>
+                    <!-- Output -->
+                    <div class="space-y-4">
+                        <h4 class="text-lg font-semibold text-gray-300">Hasil (Stego-Bytes):</h4>
+                        <pre id="lsb-result" class="w-full p-4 bg-gray-900 rounded-lg border border-gray-700 text-lg text-green-400 font-mono break-words overflow-auto">...</pre>
+                        <h4 class="text-lg font-semibold text-gray-300 mt-4">Pesan Terekstraksi:</h4>
+                        <pre id="lsb-extract-result" class="w-full p-4 bg-gray-900 rounded-lg border border-gray-700 text-lg text-yellow-400 font-mono break-words">...</pre>
+                        <span id="lsb-error" class="text-red-400 text-sm hidden"></span>
+                        <div id="lsb-table-container" class="mt-2"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- JavaScript untuk Interaktivitas -->
+    <script>
+        const navLinks = document.querySelectorAll('.nav-link');
+        const contentSections = document.querySelectorAll('.content-section');
+
+        // Fungsi untuk menampilkan konten yang dipilih
+        function showContent(id) {
+            contentSections.forEach(section => {
+                section.classList.add('hidden');
+            });
+            document.getElementById(id).classList.remove('hidden');
+
+            // Update status aktif link navigasi
+            navLinks.forEach(link => {
+                link.classList.remove('bg-blue-600', 'text-white', 'font-semibold');
+                link.classList.add('hover:bg-gray-700');
+                if (link.getAttribute('onclick') === `showContent('${id}')`) {
+                    link.classList.add('bg-blue-600', 'text-white', 'font-semibold');
+                    link.classList.remove('hover:bg-gray-700');
+                }
+            });
+        }
+
+        // --- Logika Konverter Bilangan ---
+        function convertNumber() {
+            const input = document.getElementById('conv-input').value.trim();
+            const fromBase = parseInt(document.getElementById('conv-from').value);
+            const toBase = parseInt(document.getElementById('conv-to').value);
+            const resultEl = document.getElementById('conv-result');
+            const errorEl = document.getElementById('conv-error');
+            const tableContainer = document.getElementById('conv-table-container');
+            
+            errorEl.classList.add('hidden');
+            tableContainer.innerHTML = '';
+
+            if (!input) {
+                errorEl.textContent = "Input tidak boleh kosong.";
+                errorEl.classList.remove('hidden');
+                return;
+            }
+
+            try {
+                // Validasi input untuk basisnya
+                const validationRegex = {
+                    2: /^[01]+$/,
+                    10: /^[0-9]+$/,
+                    16: /^[0-9A-Fa-f]+$/
+                };
+                if (!validationRegex[fromBase].test(input)) {
+                    throw new Error(`Input "${input}" tidak valid untuk basis ${fromBase}.`);
+                }
+
+                if (fromBase === toBase) {
+                    resultEl.textContent = input.toUpperCase();
+                    tableContainer.innerHTML = '<p class="text-gray-400">Basis input dan output sama, tidak ada konversi yang dilakukan.</p>';
+                    return;
+                }
+
+                const decimalValue = parseInt(input, fromBase);
+                if (isNaN(decimalValue)) {
+                    throw new Error("Input tidak valid untuk basis yang dipilih.");
+                }
+                
+                const result = decimalValue.toString(toBase).toUpperCase();
+                resultEl.textContent = result;
+
+                let stepsHtml = `<h4 class="font-semibold text-gray-400">Detail Konversi:</h4>`;
+                
+                // 1. Konversi DARI basis apapun KE Desimal
+                if (fromBase !== 10) {
+                    stepsHtml += `<div class="p-3 bg-gray-900 rounded-lg mt-2 font-mono text-sm">`;
+                    stepsHtml += `<p>1. Konversi dari Basis-${fromBase} ke Desimal:</p>`;
+                    let explanation = input.split('').reverse().map((digit, index) => {
+                        const val = parseInt(digit, fromBase);
+                        return `${val} * ${fromBase}<sup>${index}</sup>`;
+                    }).join(' + ');
+                    stepsHtml += `<p class="mt-1">= ${explanation}</p>`;
+                    stepsHtml += `<p class="mt-1">= <b>${decimalValue}</b> (Desimal)</p>`;
+                    stepsHtml += `</div>`;
+                }
+
+                // 2. Konversi DARI Desimal KE basis lain
+                if (toBase !== 10) {
+                    stepsHtml += `<div class="p-3 bg-gray-900 rounded-lg mt-2 font-mono text-sm">`;
+                    stepsHtml += `<p>${fromBase === 10 ? '1.' : '2.'} Konversi dari Desimal ke Basis-${toBase}:</p>`;
+                    if (decimalValue === 0) {
+                        stepsHtml += `<p class="mt-1">0 (Desimal) = 0 (Basis-${toBase})</p>`;
+                    } else {
+                        let tempVal = decimalValue;
+                        let remainders = [];
+                        while (tempVal > 0) {
+                            let remainder = tempVal % toBase;
+                            stepsHtml += `<p class="mt-1">${tempVal} / ${toBase} = ${Math.floor(tempVal / toBase)} sisa <b>${remainder.toString(16).toUpperCase()}</b></p>`;
+                            remainders.push(remainder.toString(16).toUpperCase());
+                            tempVal = Math.floor(tempVal / toBase);
+                        }
+                        stepsHtml += `<p class="mt-2">Baca sisa dari bawah ke atas: <b>${remainders.reverse().join('')}</b></p>`;
+                    }
+                    stepsHtml += `</div>`;
+                }
+
+                tableContainer.innerHTML = stepsHtml;
+
+            } catch (e) {
+                resultEl.textContent = "...";
+                tableContainer.innerHTML = '';
+                errorEl.textContent = e.message;
+                errorEl.classList.remove('hidden');
+            }
+        }
+        
+        // --- Logika Caesar Cipher ---
+        function caesarCipher(mode) {
+            const text = document.getElementById('caesar-input').value;
+            const shift = parseInt(document.getElementById('caesar-key').value);
+            const resultEl = document.getElementById('caesar-result');
+            const tableContainer = document.getElementById('caesar-table-container');
+            let result = "";
+            
+            tableContainer.innerHTML = '';
+
+            const table = document.createElement('table');
+            table.className = 'w-full text-sm text-left text-gray-300 mt-2';
+            const thead = document.createElement('thead');
+            thead.innerHTML = `
+                <tr class="bg-gray-700 text-gray-100 uppercase">
+                    <th class="px-4 py-2">Plain</th>
+                    <th class="px-4 py-2">Nilai (P)</th>
+                    <th class="px-4 py-2">Rumus</th>
+                    <th class="px-4 py-2">Hasil (C)</th>
+                    <th class="px-4 py-2">Cipher</th>
+                </tr>
+            `;
+            table.appendChild(thead);
+            
+            const tbody = document.createElement('tbody');
+
+            for (let i = 0; i < text.length; i++) {
+                let char = text[i];
+                const row = document.createElement('tr');
+                row.className = 'border-b border-gray-700';
+
+                if (char.match(/[a-z]/i)) {
+                    let code = text.charCodeAt(i);
+                    let base = (code >= 65 && code <= 90) ? 65 : 97;
+                    let p_val = code - base;
+                    let effectiveShift = mode === 'encrypt' ? shift : -shift;
+                    let op = mode === 'encrypt' ? '+' : '-';
+                    
+                    let newCode = (p_val + effectiveShift) % 26;
+                    if (newCode < 0) newCode += 26;
+                    
+                    let finalChar = String.fromCharCode(newCode + base);
+                    result += finalChar;
+
+                    row.innerHTML = `
+                        <td class="px-4 py-2 font-mono">${char}</td>
+                        <td class="px-4 py-2 font-mono">${p_val}</td>
+                        <td class="px-4 py-2 font-mono">(${p_val} ${op} ${Math.abs(effectiveShift)}) mod 26</td>
+                        <td class="px-4 py-2 font-mono">${newCode}</td>
+                        <td class="px-4 py-2 font-mono">${finalChar}</td>
+                    `;
+
+                } else {
+                    result += char;
+                    row.innerHTML = `
+                        <td class="px-4 py-2 font-mono">${char}</td>
+                        <td colspan="4" class="px-4 py-2 text-gray-500">Karakter bukan huruf, dilewati.</td>
+                    `;
+                }
+                tbody.appendChild(row);
+            }
+            table.appendChild(tbody);
+            tableContainer.appendChild(table);
+            resultEl.textContent = result;
+        }
+        
+        // --- Logika Vigenere Cipher ---
+        function vigenereCipher(mode) {
+            const text = document.getElementById('vigenere-input').value;
+            let key = document.getElementById('vigenere-key').value.toUpperCase().replace(/[^A-Z]/g, '');
+            const resultEl = document.getElementById('vigenere-result');
+            const errorEl = document.getElementById('vigenere-error');
+            const tableContainer = document.getElementById('vigenere-table-container');
+
+            errorEl.classList.add('hidden');
+            tableContainer.innerHTML = '';
+
+            if (!key) {
+                errorEl.textContent = "Kata kunci tidak boleh kosong dan harus berisi huruf.";
+                errorEl.classList.remove('hidden');
+                return;
+            }
+
+            const table = document.createElement('table');
+            table.className = 'w-full text-sm text-left text-gray-300 mt-2';
+            const thead = document.createElement('thead');
+            thead.innerHTML = `
+                <tr class="bg-gray-700 text-gray-100 uppercase">
+                    <th class="px-4 py-2">Plain (P)</th>
+                    <th class="px-4 py-2">Key (K)</th>
+                    <th class="px-4 py-2">Nilai P</th>
+                    <th class="px-4 py-2">Nilai K</th>
+                    <th class="px-4 py-2">Rumus</th>
+                    <th class="px-4 py-2">Hasil</th>
+                    <th class="px-4 py-2">Cipher</th>
+                </tr>
+            `;
+            table.appendChild(thead);
+            const tbody = document.createElement('tbody');
+
+            let result = "";
+            let keyIndex = 0;
+
+            for (let i = 0; i < text.length; i++) {
+                let char = text[i];
+                const row = document.createElement('tr');
+                row.className = 'border-b border-gray-700';
+
+                if (char.match(/[a-z]/i)) {
+                    let code = text.charCodeAt(i);
+                    let base = (code >= 65 && code <= 90) ? 65 : 97;
+                    let p_val = code - base;
+                    
+                    let keyChar = key[keyIndex % key.length];
+                    let shift = keyChar.charCodeAt(0) - 65;
+                    let k_val = shift;
+
+                    let effectiveShift = mode === 'encrypt' ? shift : -shift;
+                    let op = mode === 'encrypt' ? '+' : '-';
+
+                    let newCode = (p_val + effectiveShift) % 26;
+                    if (newCode < 0) newCode += 26;
+                    
+                    let finalChar = String.fromCharCode(newCode + base);
+                    result += finalChar;
+                    
+                    row.innerHTML = `
+                        <td class="px-4 py-2 font-mono">${char}</td>
+                        <td class="px-4 py-2 font-mono">${keyChar}</td>
+                        <td class="px-4 py-2 font-mono">${p_val}</td>
+                        <td class="px-4 py-2 font-mono">${k_val}</td>
+                        <td class="px-4 py-2 font-mono">(${p_val} ${op} ${k_val}) mod 26</td>
+                        <td class="px-4 py-2 font-mono">${newCode}</td>
+                        <td class="px-4 py-2 font-mono">${finalChar}</td>
+                    `;
+
+                    keyIndex++;
+                } else {
+                    result += char;
+                    row.innerHTML = `
+                        <td class="px-4 py-2 font-mono">${char}</td>
+                        <td colspan="6" class="px-4 py-2 text-gray-500">Karakter bukan huruf, dilewati.</td>
+                    `;
+                }
+                tbody.appendChild(row);
+            }
+            table.appendChild(tbody);
+            tableContainer.appendChild(table);
+            resultEl.textContent = result;
+        }
+
+        // --- Logika Transposisi Kolom ---
+        function transpositionCipher(mode) {
+            const text = document.getElementById('transposisi-input').value;
+            const key = document.getElementById('transposisi-key').value.toUpperCase().replace(/[^A-Z]/g, '');
+            const resultEl = document.getElementById('transposisi-result');
+            const errorEl = document.getElementById('transposisi-error');
+            const tableContainer = document.getElementById('transposisi-table-container');
+
+            errorEl.classList.add('hidden');
+            tableContainer.innerHTML = '';
+
+            if (!key) {
+                errorEl.textContent = "Kata kunci tidak boleh kosong.";
+                errorEl.classList.remove('hidden');
+                return;
+            }
+
+            try {
+                if (mode === 'encrypt') {
+                    resultEl.textContent = transposeEncrypt(text, key, tableContainer);
+                } else {
+                    resultEl.textContent = transposeDecrypt(text, key, tableContainer);
+                }
+            } catch (e) {
+                resultEl.textContent = '...';
+                errorEl.textContent = e.message;
+                errorEl.classList.remove('hidden');
+            }
+        }
+
+        function getNumericOrder(key) {
+            let keyWithIndex = key.split('').map((char, index) => ({ char, index }));
+            keyWithIndex.sort((a, b) => a.char.localeCompare(b.char));
+            let keyWithOrder = keyWithIndex.map((item, i) => ({ ...item, order: i }));
+            keyWithOrder.sort((a, b) => a.index - b.index);
+            return keyWithOrder.map(item => item.order);
+        }
+
+        function transposeEncrypt(text, key, container) {
+            const numCols = key.length;
+            const numRows = Math.ceil(text.length / numCols);
+            const paddedText = text.padEnd(numRows * numCols, 'X');
+            const grid = [];
+            const order = getNumericOrder(key);
+
+            let html = `<h4 class="font-semibold text-gray-400">1. Membuat Grid:</h4>`;
+            html += `<p class="text-sm text-gray-500 mb-2">Plaintext ditulis baris per baris. Karakter 'X' ditambahkan jika perlu.</p>`;
+            const table = document.createElement('table');
+            table.className = 'w-full text-sm text-left text-gray-300';
+            
+            let thead = `<thead><tr class="bg-gray-700 text-gray-100">`;
+            for(let i=0; i<key.length; i++) {
+                thead += `<th class="px-4 py-2 text-center">${key[i]} (${order[i]})</th>`;
+            }
+            thead += `</tr></thead>`;
+            table.innerHTML += thead;
+
+            let tbody = `<tbody>`;
+            for(let i=0; i < numRows; i++) {
+                const rowText = paddedText.substring(i * numCols, (i + 1) * numCols);
+                grid.push(rowText.split(''));
+                tbody += `<tr class="border-b border-gray-700">`;
+                for(let char of rowText) {
+                    tbody += `<td class="px-4 py-2 text-center font-mono">${char}</td>`;
+                }
+                tbody += `</tr>`;
+            }
+            tbody += `</tbody>`;
+            table.innerHTML += tbody;
+            container.innerHTML = html;
+            container.appendChild(table);
+
+            let result = "";
+            let readHtml = `<h4 class="font-semibold text-gray-400 mt-4">2. Membaca Grid Sesuai Urutan Kunci:</h4>`;
+            readHtml += `<p class="text-sm text-gray-500 mb-2">Ciphertext dibentuk dengan membaca kolom dari urutan 0, 1, 2, dst.</p>`;
+            readHtml += `<div class="p-3 bg-gray-900 rounded-lg font-mono">`;
+
+            for (let i = 0; i < numCols; i++) {
+                const colIndex = order.indexOf(i);
+                readHtml += `Kolom urutan ${i} (Kunci '${key[colIndex]}'): `;
+                let colText = "";
+                for (let r = 0; r < numRows; r++) {
+                    colText += grid[r][colIndex];
+                }
+                result += colText;
+                readHtml += `<span class="text-green-400">${colText}</span><br>`;
+            }
+            readHtml += `</div>`;
+            container.innerHTML += readHtml;
+
+            return result;
+        }
+
+        function transposeDecrypt(text, key, container) {
+            const numCols = key.length;
+            const numRows = Math.ceil(text.length / numCols);
+
+            if (text.length !== numCols * numRows) {
+                throw new Error("Ciphertext tidak valid untuk kunci ini. Panjang tidak cocok.");
+            }
+
+            const grid = Array.from({ length: numRows }, () => Array(numCols).fill(''));
+            const order = getNumericOrder(key);
+            
+            let html = `<h4 class="font-semibold text-gray-400">1. Menyiapkan Grid Kosong:</h4>`;
+            html += `<p class="text-sm text-gray-500 mb-2">Grid (${numRows}x${numCols}) disiapkan sesuai panjang kunci dan ciphertext.</p>`;
+            const table = document.createElement('table');
+            table.className = 'w-full text-sm text-left text-gray-300';
+            let thead = `<thead><tr class="bg-gray-700 text-gray-100">`;
+            for(let i=0; i<key.length; i++) {
+                thead += `<th class="px-4 py-2 text-center">${key[i]} (${order[i]})</th>`;
+            }
+            thead += `</tr></thead>`;
+            table.innerHTML += thead;
+            let tbody = `<tbody>`;
+            for(let r=0; r<numRows; r++) {
+                tbody += `<tr class="border-b border-gray-700">`;
+                for(let c=0; c<numCols; c++) {
+                    tbody += `<td class="px-4 py-2 text-center font-mono h-8"></td>`;
+                }
+                tbody += `</tr>`;
+            }
+            tbody += `</tbody>`;
+            table.innerHTML += tbody;
+            container.innerHTML = html;
+            container.appendChild(table);
+
+            let textIndex = 0;
+            let writeHtml = `<h4 class="font-semibold text-gray-400 mt-4">2. Mengisi Grid dengan Ciphertext:</h4>`;
+            writeHtml += `<p class="text-sm text-gray-500 mb-2">Ciphertext ditulis secara vertikal sesuai urutan kunci (kolom 0, 1, 2, ...).</p>`;
+            
+            for (let i = 0; i < numCols; i++) {
+                const colIndex = order.indexOf(i);
+                for (let r = 0; r < numRows; r++) {
+                    grid[r][colIndex] = text[textIndex];
+                    table.rows[r+1].cells[colIndex].innerText = text[textIndex];
+                    textIndex++;
+                }
+            }
+            container.innerHTML += writeHtml;
+            
+            const result = grid.map(row => row.join('')).join('');
+            let readHtml = `<h4 class="font-semibold text-gray-400 mt-4">3. Membaca Grid Secara Horizontal:</h4>`;
+            readHtml += `<p class="text-sm text-gray-500 mb-2">Plaintext didapatkan dengan membaca grid baris per baris.</p>`;
+            readHtml += `<div class="p-3 bg-gray-900 rounded-lg font-mono text-green-400">${result}</div>`;
+            container.innerHTML += readHtml;
+
+            return result;
+        }
+        
+        // --- Logika XOR ---
+        function calculateXOR() {
+            let a = document.getElementById('xor-a').value.trim();
+            let b = document.getElementById('xor-b').value.trim();
+            const resultEl = document.getElementById('xor-result');
+            const errorEl = document.getElementById('xor-error');
+            const tableContainer = document.getElementById('xor-table-container');
+
+            errorEl.classList.add('hidden');
+            tableContainer.innerHTML = '';
+            
+            if (/[^01]/.test(a) || /[^01]/.test(b)) {
+                errorEl.textContent = "Input harus hanya berisi 0 dan 1.";
+                errorEl.classList.remove('hidden');
+                resultEl.textContent = '...';
+                return;
+            }
+
+            if (a.length !== b.length) {
+                errorEl.textContent = "Panjang Input A dan Input B harus sama.";
+                errorEl.classList.remove('hidden');
+                resultEl.textContent = '...';
+                return;
+            }
+            
+            let result = "";
+            const table = document.createElement('table');
+            table.className = 'w-full text-sm text-center text-gray-300 font-mono';
+            
+            let thead = `<thead><tr class="bg-gray-700 text-gray-100"><th>Input</th>`;
+            let rowA = `<tr class="border-b border-gray-700"><td class="px-4 py-2 font-semibold">Input A</td>`;
+            let rowB = `<tr class="border-b border-gray-700"><td class="px-4 py-2 font-semibold">Input B</td>`;
+            let rowResult = `<tr class="bg-gray-700"><td class="px-4 py-2 font-bold">A ⊕ B</td>`;
+
+            for(let i=0; i<a.length; i++) {
+                let bitResult = (a[i] === b[i]) ? '0' : '1';
+                result += bitResult;
+                
+                thead += `<th class="px-2 py-1">${i}</th>`;
+                rowA += `<td class="px-2 py-1">${a[i]}</td>`;
+                rowB += `<td class="px-2 py-1">${b[i]}</td>`;
+                rowResult += `<td class="px-2 py-1 font-bold text-green-400">${bitResult}</td>`;
+            }
+
+            thead += `</tr></thead>`;
+            rowA += `</tr>`;
+            rowB += `</tr>`;
+            rowResult += `</tr>`;
+
+            table.innerHTML = thead + `<tbody>` + rowA + rowB + rowResult + `</tbody>`;
+            tableContainer.appendChild(table);
+
+            resultEl.textContent = result;
+        }
+
+        // --- Logika Mode Operasi ECB ---
+        function ecbEncrypt() {
+            const plaintext = document.getElementById('ecb-input').value.toUpperCase();
+            const key = document.getElementById('ecb-key').value.toUpperCase();
+            const blockSize = parseInt(document.getElementById('ecb-blocksize').value);
+            const resultEl = document.getElementById('ecb-result');
+            const errorEl = document.getElementById('ecb-error');
+            const tableContainer = document.getElementById('ecb-table-container');
+
+            errorEl.classList.add('hidden');
+            resultEl.innerHTML = '...';
+            tableContainer.innerHTML = '';
+
+            if (!plaintext || !key || !blockSize) {
+                errorEl.textContent = "Plaintext, Kunci, dan Ukuran Blok tidak boleh kosong.";
+                errorEl.classList.remove('hidden');
+                return;
+            }
+            if (blockSize <= 0) {
+                errorEl.textContent = "Ukuran Blok harus lebih besar dari 0.";
+                errorEl.classList.remove('hidden');
+                return;
+            }
+
+            let paddedText = plaintext;
+            const paddingNeeded = blockSize - (plaintext.length % blockSize);
+            if (paddingNeeded !== blockSize) {
+                paddedText += "X".repeat(paddingNeeded);
+            }
+
+            const blocks = [];
+            for (let i = 0; i < paddedText.length; i += blockSize) {
+                blocks.push(paddedText.substring(i, i + blockSize));
+            }
+
+            const ciphertextBlocks = [];
+            const blockColors = {};
+            const colors = ['bg-sky-700', 'bg-amber-700', 'bg-rose-700', 'bg-teal-700', 'bg-indigo-700', 'bg-pink-700'];
+            let colorIndex = 0;
+            
+            let tableHtml = `<table class="w-full text-sm text-left text-gray-300 font-mono">
+                                <thead class="bg-gray-700 text-gray-100"><tr>
+                                    <th class="px-4 py-2">Plaintext Block</th>
+                                    <th class="px-4 py-2">Ciphertext Block</th>
+                                </tr></thead><tbody>`;
+
+            resultEl.innerHTML = '';
+
+            blocks.forEach(block => {
+                let ciphertextBlock = '';
+                for (let i = 0; i < block.length; i++) {
+                    const p_char = block.charCodeAt(i) - 65;
+                    const k_char = key.charCodeAt(i % key.length) - 65;
+                    const c_char = String.fromCharCode(((p_char + k_char) % 26) + 65);
+                    ciphertextBlock += c_char;
+                }
+                ciphertextBlocks.push(ciphertextBlock);
+
+                if (blockColors[ciphertextBlock] === undefined) {
+                    blockColors[ciphertextBlock] = colors[colorIndex % colors.length];
+                    colorIndex++;
+                }
+                const color = blockColors[ciphertextBlock];
+
+                const blockSpan = document.createElement('span');
+                blockSpan.className = `p-2 rounded-md text-white ${color}`;
+                blockSpan.textContent = ciphertextBlock;
+                resultEl.appendChild(blockSpan);
+
+                tableHtml += `<tr class="border-b border-gray-700">
+                                <td class="px-4 py-2">${block}</td>
+                                <td class="px-4 py-2 ${color.replace('bg', 'text')} font-semibold">${ciphertextBlock}</td>
+                              </tr>`;
+            });
+            
+            tableHtml += `</tbody></table>`;
+            tableContainer.innerHTML = tableHtml;
+        }
+
+        // --- Logika LSB ---
+        function lsbEmbed() {
+            const bytesStr = document.getElementById('lsb-bytes').value;
+            const message = document.getElementById('lsb-message').value.trim();
+            const resultEl = document.getElementById('lsb-result');
+            const errorEl = document.getElementById('lsb-error');
+            const tableContainer = document.getElementById('lsb-table-container');
+
+            errorEl.classList.add('hidden');
+            tableContainer.innerHTML = '';
+            document.getElementById('lsb-extract-result').textContent = '...';
+            
+            if (/[^01]/.test(message)) {
+                errorEl.textContent = "Pesan rahasia harus biner (0 atau 1).";
+                errorEl.classList.remove('hidden');
+                return;
+            }
+
+            const bytes = bytesStr.split(',').map(b => b.trim()).filter(b => b.length > 0 && !/[^01]/.test(b));
+            
+            if (bytes.length < message.length) {
+                errorEl.textContent = "Jumlah data byte tidak cukup untuk pesan rahasia.";
+                errorEl.classList.remove('hidden');
+                return;
+            }
+
+            let stegoBytes = [];
+            let tableHtml = `<table class="w-full text-sm text-left text-gray-300 font-mono">
+                                <thead class="bg-gray-700 text-gray-100"><tr>
+                                    <th class="px-4 py-2">Cover Byte</th>
+                                    <th class="px-4 py-2">Message Bit</th>
+                                    <th class="px-4 py-2">Stego Byte</th>
+                                </tr></thead><tbody>`;
+
+            for(let i=0; i < bytes.length; i++) {
+                let byte = bytes[i];
+                let stegoByte = byte;
+                let messageBit = '';
+
+                if (i < message.length) {
+                    messageBit = message[i];
+                    stegoByte = byte.substring(0, byte.length - 1) + messageBit;
+                    tableHtml += `<tr class="border-b border-gray-700">
+                                    <td class="px-4 py-2">${byte}</td>
+                                    <td class="px-4 py-2 text-yellow-400">${messageBit}</td>
+                                    <td class="px-4 py-2 text-green-400">${stegoByte.substring(0, byte.length - 1)}<span class="font-bold text-lg">${messageBit}</span></td>
+                                  </tr>`;
+                } else {
+                    tableHtml += `<tr class="border-b border-gray-700">
+                                    <td class="px-4 py-2">${byte}</td>
+                                    <td class="px-4 py-2 text-gray-500">-</td>
+                                    <td class="px-4 py-2 text-gray-500">${stegoByte} (tidak diubah)</td>
+                                  </tr>`;
+                }
+                stegoBytes.push(stegoByte);
+            }
+            
+            tableHtml += `</tbody></table>`;
+            tableContainer.innerHTML = tableHtml;
+            resultEl.textContent = stegoBytes.join(', ');
+        }
+
+        function lsbExtract() {
+            const bytesStr = document.getElementById('lsb-bytes').value;
+            const messageLength = document.getElementById('lsb-message').value.trim().length;
+            const resultEl = document.getElementById('lsb-extract-result');
+            const errorEl = document.getElementById('lsb-error');
+            const tableContainer = document.getElementById('lsb-table-container');
+
+            errorEl.classList.add('hidden');
+            tableContainer.innerHTML = '';
+            document.getElementById('lsb-result').textContent = '...';
+            
+            if (messageLength === 0) {
+                errorEl.textContent = "Masukkan pesan biner di atas untuk menentukan panjang ekstraksi.";
+                errorEl.classList.remove('hidden');
+                return;
+            }
+            
+            const bytes = bytesStr.split(',').map(b => b.trim()).filter(b => b.length > 0 && !/[^01]/.test(b));
+            
+            if (bytes.length < messageLength) {
+                errorEl.textContent = "Data byte lebih sedikit dari panjang pesan yang diharapkan.";
+                errorEl.classList.remove('hidden');
+                return;
+            }
+
+            let extractedMessage = "";
+            let tableHtml = `<table class="w-full text-sm text-left text-gray-300 font-mono">
+                                <thead class="bg-gray-700 text-gray-100"><tr>
+                                    <th class="px-4 py-2">Stego Byte</th>
+                                    <th class="px-4 py-2">Extracted Bit (LSB)</th>
+                                </tr></thead><tbody>`;
+
+            for(let i=0; i < messageLength; i++) {
+                const extractedBit = bytes[i].charAt(bytes[i].length - 1);
+                extractedMessage += extractedBit;
+                tableHtml += `<tr class="border-b border-gray-700">
+                                <td class="px-4 py-2">${bytes[i].substring(0, bytes[i].length - 1)}<span class="font-bold text-lg text-yellow-400">${extractedBit}</span></td>
+                                <td class="px-4 py-2 text-yellow-400">${extractedBit}</td>
+                              </tr>`;
+            }
+            
+            tableHtml += `</tbody></table>`;
+            tableContainer.innerHTML = tableHtml;
+            resultEl.textContent = extractedMessage;
+        }
+
+        // --- Logika RSA ---
+        const RSAStyles = {
+            h1: 'text-2xl font-bold text-white mb-3',
+            h2: 'text-xl font-semibold text-blue-300 mt-4 mb-2',
+            h3: 'text-lg font-medium text-gray-300 mt-3 mb-1',
+            p: 'text-gray-300 font-mono text-sm',
+            code: 'text-green-400',
+            formula: 'text-yellow-400 font-mono text-base my-2 p-2 bg-gray-700/50 rounded-md block',
+            result: 'text-xl font-bold text-green-300',
+            error: 'text-red-400',
+            table: 'w-full text-sm text-left text-gray-300 mt-2 font-mono border-collapse',
+            th: 'px-4 py-2 bg-gray-700 text-gray-100 border border-gray-600',
+            td: 'px-4 py-2 border border-gray-600',
+        };
+
+        function getFactors(num) {
+            const factors = new Set();
+            for (let i = 1; i <= Math.sqrt(Number(num)); i++) {
+                if (num % BigInt(i) === 0n) {
+                    factors.add(BigInt(i));
+                    factors.add(num / BigInt(i));
+                }
+            }
+            return Array.from(factors).sort((a, b) => a > b ? 1 : -1);
+        }
+
+        function gcd(a, b) {
+            while (b) {
+                [a, b] = [b, a % b];
+            }
+            return a;
+        }
+
+        function modInverse(e, phi) {
+            let m0 = phi, t, q;
+            let x0 = 0n, x1 = 1n;
+            if (phi === 1n) return 0n;
+            while (e > 1n) {
+                q = e / phi;
+                [e, phi] = [phi, e % phi];
+                t = x0;
+                x0 = x1 - q * x0;
+                x1 = t;
+            }
+            if (x1 < 0n) x1 += m0;
+            return x1;
+        }
+
+        function modPow(base, exp, mod) {
+            let res = 1n;
+            base %= mod;
+            while (exp > 0n) {
+                if (exp % 2n === 1n) res = (res * base) % mod;
+                exp >>= 1n;
+                base = (base * base) % mod;
+            }
+            return res;
+        }
+        
+        function modPowWithSteps(base, exp, mod) {
+            let report = `<h3 class="${RSAStyles.h3}">Metode Square and Multiply:</h3>`;
+            
+            const powers = [];
+            let current_power = 1n;
+            
+            report += `<div class="${RSAStyles.p}">`;
+            while(current_power <= exp) {
+                const val_mod = modPow(base, current_power, mod);
+                powers.push({power: current_power, val: val_mod});
+                report += `  ${base}<sup>${current_power}</sup> mod ${mod} = ${val_mod}<br>`;
+                current_power *= 2n;
+            }
+            report += `</div>`;
+
+            report += `<h3 class="${RSAStyles.h3}">Kombinasi Pangkat:</h3>`;
+            let temp_exp = exp;
+            const exp_parts = [];
+            for(let i = powers.length - 1; i >= 0; i--) {
+                if (temp_exp >= powers[i].power) {
+                    temp_exp -= powers[i].power;
+                    exp_parts.push(powers[i]);
+                }
+            }
+            exp_parts.reverse(); // Reverse to multiply from smallest to largest
+            
+            const exp_sum_str = exp_parts.map(p => p.power).join(' + ');
+            report += `<p class="${RSAStyles.p}">${base}<sup>${exp}</sup> = ${base}<sup>${exp_sum_str}</sup></p>`;
+            
+            const val_mult_str = exp_parts.map(p => p.val).join(' × ');
+            report += `<p class="${RSAStyles.p}">= ${val_mult_str} mod ${mod}</p>`;
+            
+            report += `<h3 class="${RSAStyles.h3}">Perhitungan Bertahap:</h3>`;
+            report += `<div class="${RSAStyles.p}">`;
+            
+            let result = 1n;
+            if (exp_parts.length > 1) {
+                 result = exp_parts[0].val;
+                 for(let i=1; i<exp_parts.length; i++) {
+                     let next_val = exp_parts[i].val;
+                     let old_res = result;
+                     result = (result * next_val) % mod;
+                     report += `  ${old_res} × ${next_val} = ${old_res * next_val} ≡ <b>${result}</b> mod ${mod}<br>`;
+                 }
+            } else {
+                result = exp_parts[0].val;
+                report += `  Hasil: <b>${result}</b><br>`;
+            }
+            report += `</div>`;
+
+            const final_result = modPow(base, exp, mod);
+            return { report, result: final_result };
+        }
+
+
+        let rsa_p, rsa_q, rsa_n, rsa_phi, rsa_e, rsa_d;
+
+        function findEChoices() {
+            rsa_p = BigInt(document.getElementById('rsa-p').value);
+            rsa_q = BigInt(document.getElementById('rsa-q').value);
+            const resultEl = document.getElementById('rsa-keys-result');
+            const tableContainer = document.getElementById('rsa-keys-table-container');
+            const eSelectionContainer = document.getElementById('rsa-e-selection-container');
+            const eSelect = document.getElementById('rsa-e-select');
+
+            resultEl.textContent = '...';
+            tableContainer.innerHTML = '';
+            eSelect.innerHTML = '';
+            eSelectionContainer.classList.add('hidden');
+
+            let report = `<h2 class="${RSAStyles.h2}">Langkah 1: Setup Kunci RSA</h2>`;
+            
+            report += `<h3 class="${RSAStyles.h3}">1.1 Menghitung Parameter Dasar</h3>`;
+            rsa_n = rsa_p * rsa_q;
+            rsa_phi = (rsa_p - 1n) * (rsa_q - 1n);
+            report += `<div class="${RSAStyles.p}">`;
+            report += `p = <code class="${RSAStyles.code}">${rsa_p}</code> (bilangan prima)<br>`;
+            report += `q = <code class="${RSAStyles.code}">${rsa_q}</code> (bilangan prima)<br>`;
+            report += `n = p × q = ${rsa_p} × ${rsa_q} = <code class="${RSAStyles.code}">${rsa_n}</code><br>`;
+            report += `φ(n) = (p-1) × (q-1) = ${rsa_p-1n} × ${rsa_q-1n} = <code class="${RSAStyles.code}">${rsa_phi}</code><br>`;
+            report += `</div>`;
+
+            report += `<h3 class="${RSAStyles.h3}">1.2 Memilih Kunci Publik (e)</h3>`;
+            report += `<p class="${RSAStyles.p}">Harus relatif prima dengan φ(n) = ${rsa_phi}</p>`;
+            const factorsOfPhi = getFactors(rsa_phi);
+            report += `<p class="${RSAStyles.p}">Faktor dari ${rsa_phi}: ${factorsOfPhi.join(', ')}</p>`;
+            
+            const e_choices = [];
+            for (let i = 2n; i < rsa_phi; i++) {
+                if (gcd(i, rsa_phi) === 1n) {
+                    e_choices.push(i);
+                }
+            }
+            report += `<p class="${RSAStyles.p}">Pilihan e yang mungkin: <code class="${RSAStyles.code}">${e_choices.join(', ')}</code></p>`;
+            
+            tableContainer.innerHTML = report;
+            
+            e_choices.forEach(e_val => {
+                const option = document.createElement('option');
+                option.value = e_val;
+                option.textContent = e_val;
+                if ([3n, 7n, 17n, 65537n].includes(e_val)) {
+                    option.textContent += ' (rekomendasi)';
+                }
+                eSelect.appendChild(option);
+            });
+            eSelectionContainer.classList.remove('hidden');
+        }
+
+        function generateRSAKeys() {
+            rsa_e = BigInt(document.getElementById('rsa-e-select').value);
+            const tableContainer = document.getElementById('rsa-keys-table-container');
+            const resultEl = document.getElementById('rsa-keys-result');
+            
+            let report = tableContainer.innerHTML;
+            report += `<p class="${RSAStyles.p} mt-2">Pilih e = <code class="${RSAStyles.code}">${rsa_e}</code></p>`;
+
+            report += `<h3 class="${RSAStyles.h3}">1.3 Menghitung Kunci Privat (d)</h3>`;
+            report += `<p class="${RSAStyles.p}">Harus memenuhi: d × e ≡ 1 mod φ(n)</p>`;
+            report += `<p class="${RSAStyles.p}">d × ${rsa_e} ≡ 1 mod ${rsa_phi}</p>`;
+            
+            rsa_d = modInverse(rsa_e, rsa_phi);
+            report += `<p class="${RSAStyles.p}">Dengan menggunakan Algoritma Euclidean Diperluas, ditemukan d = <code class="${RSAStyles.code}">${rsa_d}</code></p>`;
+            report += `<p class="${RSAStyles.p}">Verifikasi: (${rsa_d} × ${rsa_e}) mod ${rsa_phi} = ${rsa_d * rsa_e} mod ${rsa_phi} = <code class="${RSAStyles.code}">${(rsa_d * rsa_e) % rsa_phi}</code></p>`;
+
+            report += `<h3 class="${RSAStyles.h3}">1.4 Kunci yang Dihasilkan</h3>`;
+            report += `<p class="${RSAStyles.p}">Kunci Publik: (e, n) = <code class="${RSAStyles.code}">(${rsa_e}, ${rsa_n})</code></p>`;
+            report += `<p class="${RSAStyles.p}">Kunci Privat: (d, n) = <code class="${RSAStyles.code}">(${rsa_d}, ${rsa_n})</code></p>`;
+
+            tableContainer.innerHTML = report;
+            resultEl.textContent = `Kunci Publik: (${rsa_e}, ${rsa_n}) | Kunci Privat: (${rsa_d}, ${rsa_n})`;
+        }
+
+        function encryptRSA() {
+            const P = BigInt(document.getElementById('rsa-encrypt-p').value);
+            const e = BigInt(document.getElementById('rsa-encrypt-e').value);
+            const n = BigInt(document.getElementById('rsa-encrypt-n').value);
+            const resultEl = document.getElementById('rsa-encrypt-result');
+            const tableContainer = document.getElementById('rsa-encrypt-table-container');
+
+            let report = `<h2 class="${RSAStyles.h2}">Langkah 2: Enkripsi Pesan P = ${P}</h2>`;
+            report += `<h3 class="${RSAStyles.h3}">2.1 Rumus Enkripsi</h3>`;
+            report += `<code class="${RSAStyles.formula}">C = P<sup>e</sup> mod n</code>`;
+            
+            report += `<h3 class="${RSAStyles.h3}">2.2 Perhitungan</h3>`;
+            report += `<p class="${RSAStyles.p}">C = ${P}<sup>${e}</sup> mod ${n}</p>`;
+            const p_pow_e = P ** e;
+            report += `<p class="${RSAStyles.p}">${P}<sup>${e}</sup> = ${p_pow_e}</p>`;
+            const C = p_pow_e % n;
+            report += `<p class="${RSAStyles.p}">${p_pow_e} ÷ ${n} = ${p_pow_e / n} sisa <code class="${RSAStyles.code}">${C}</code></p>`;
+            report += `<p class="text-xs text-gray-400 font-mono">(${n} × ${p_pow_e / n} = ${n * (p_pow_e/n)}, ${p_pow_e} - ${n * (p_pow_e/n)} = ${C})</p>`;
+
+            report += `<h3 class="${RSAStyles.h3}">2.3 Hasil Enkripsi</h3>`;
+            report += `<p class="${RSAStyles.p}">Ciphertext C = <code class="${RSAStyles.result}">${C}</code></p>`;
+
+            tableContainer.innerHTML = report;
+            resultEl.textContent = C.toString();
+        }
+
+        function decryptRSA() {
+            const C = BigInt(document.getElementById('rsa-decrypt-c').value);
+            const d = BigInt(document.getElementById('rsa-decrypt-d').value);
+            const n = BigInt(document.getElementById('rsa-decrypt-n').value);
+            const resultEl = document.getElementById('rsa-decrypt-result');
+            const tableContainer = document.getElementById('rsa-decrypt-table-container');
+
+            let report = `<h2 class="${RSAStyles.h2}">Langkah 3: Dekripsi Ciphertext C = ${C}</h2>`;
+            report += `<h3 class="${RSAStyles.h3}">3.1 Rumus Dekripsi</h3>`;
+            report += `<code class="${RSAStyles.formula}">P = C<sup>d</sup> mod n</code>`;
+
+            report += `<h3 class="${RSAStyles.h3}">3.2 Perhitungan</h3>`;
+            report += `<p class="${RSAStyles.p}">P = ${C}<sup>${d}</sup> mod ${n}</p>`;
+            
+            const modPowResult = modPowWithSteps(C, d, n);
+            report += modPowResult.report;
+            const P = modPowResult.result;
+
+            report += `<h3 class="${RSAStyles.h3}">3.3 Hasil Dekripsi</h3>`;
+            report += `<p class="${RSAStyles.p}">Plaintext P = <code class="${RSAStyles.result}">${P}</code></p>`;
+            
+            if (rsa_p && rsa_q && rsa_e && rsa_d) {
+                 report += `<h2 class="${RSAStyles.h2} mt-6">Ringkasan Hasil</h2>`;
+                 report += `<table class="${RSAStyles.table}"><tbody>`;
+                 report += `<tr><td class="${RSAStyles.td}">Parameter</td><td class="${RSAStyles.td}">Nilai</td></tr>`;
+                 report += `<tr><td class="${RSAStyles.td}">p</td><td class="${RSAStyles.td}">${rsa_p}</td></tr>`;
+                 report += `<tr><td class="${RSAStyles.td}">q</td><td class="${RSAStyles.td}">${rsa_q}</td></tr>`;
+                 report += `<tr><td class="${RSAStyles.td}">n</td><td class="${RSAStyles.td}">${rsa_n}</td></tr>`;
+                 report += `<tr><td class="${RSAStyles.td}">φ(n)</td><td class="${RSAStyles.td}">${rsa_phi}</td></tr>`;
+                 report += `<tr><td class="${RSAStyles.td}">e</td><td class="${RSAStyles.td}">${rsa_e}</td></tr>`;
+                 report += `<tr><td class="${RSAStyles.td}">d</td><td class="${RSAStyles.td}">${rsa_d}</td></tr>`;
+                 const plain_p = document.getElementById('rsa-encrypt-p').value;
+                 if (plain_p) {
+                    report += `<tr><td class="${RSAStyles.td}">Plaintext (P)</td><td class="${RSAStyles.td}">${plain_p}</td></tr>`;
+                 }
+                 report += `<tr><td class="${RSAStyles.td}">Ciphertext (C)</td><td class="${RSAStyles.td}">${C}</td></tr>`;
+                 report += `</tbody></table>`;
+                 if (plain_p) {
+                    report += `<p class="${RSAStyles.p} mt-2">Verifikasi Berhasil: Dekripsi ciphertext ${C} menghasilkan plaintext asli ${P}.</p>`;
+                 }
+            }
+
+            tableContainer.innerHTML = report;
+            resultEl.textContent = P.toString();
+        }
+    </script>
+</body>
+</html>
